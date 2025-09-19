@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FirebaseConnectionController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +15,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('/', [FirebaseConnectionController::class, '__cunstruct']);
+
+
+Route::get('/create', [FirebaseConnectionController::class, 'set']);
+Route::get('/read', [FirebaseConnectionController::class, 'read']);
+Route::get('/update', [FirebaseConnectionController::class, 'update']);
+Route::get('/delete', [FirebaseConnectionController::class, 'delete']);
