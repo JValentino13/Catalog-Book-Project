@@ -20,6 +20,7 @@ class FirebaseConnectionController extends Controller
                 $this->database = $factory->createDatabase();
                 $this->auth = $factory->createAuth();
 
+
                 //cara koneksi create database tanpa this
                 // $reference = $database -> getReference('Coba Koneksi Firebase');
                 // $reference -> set(['connection' => true]);
@@ -29,28 +30,48 @@ class FirebaseConnectionController extends Controller
 
     public function read()
     {
-        $ref = $this->database->getReference('hewan/herbivora/domba')->getSnapshot();
-        dump($ref);
-        $ref = $this->database->getReference('hewan/herbivora')->getValue();
-        dump($ref);
-        $ref = $this->database->getReference('hewan/karnivora')->getValue();
-        dump($ref);
-        $ref = $this->database->getReference('hewan/omnivora')->getSnapshot()->exists();
-        dump($ref);
+        $ref = $this->database->getReference('fiksi/novel')->getValue();
+        $data = [];
+
+        foreach ($ref as $author => $books) {
+            foreach ($books as $key => $title) {
+                $id = (int)$key;
+                $data[] = [
+                    "id" => $id,
+                    "name" => $title,
+                    "author" => $author,
+                    "category" => "Novel Fiksi",
+                    "price" => "Rp " . (70000 + ($id * 5000)),
+                    "image" => "https://via.placeholder.com/150?text=" . urlencode($title)
+                ];
+            }
+        }
+
+        $filteredData = array_filter($data, function ($item) {
+            return $item['id'] !== 0 && $item['id'] !== null;
+        });
+        $filteredData = array_values($filteredData);
+
+        return response()->json($filteredData);
     }
+
 
     public function update()
     {
-        $ref = $this->database->getReference('daftar_buku/fiksi/Novel')
-        ->update(["Tere Liye" => "Pergi"]);
+        $ref = $this->database->getReference('fiksi/novel/Tere Liye')
+        ->update(["1" => "Pergi"]);
     }
 
     public function set()
     {
-        $ref = $this->database->getReference('daftar_buku/fiksi')
+        $ref = $this->database->getReference('fiksi/novel')
         ->set([
-            "Novel" => [
-                "Tere Liye" => "Pulang",
+            "Tere Liye" => [
+                "1" => "Pulang",
+                "2" => "Bumi Manusia",
+                "3" => "Anak Semua Bangsa",
+                "4" => "Hujan",
+                "5" => "Bintang"
             ]
         ]);
     }
@@ -64,10 +85,10 @@ class FirebaseConnectionController extends Controller
          */
 
         // Mengunakan remove()
-        $ref = $this->database->getReference('daftar_buku/fiksi/Novel')->remove();
+        $ref = $this->database->getReference('fiksi/novel')->remove();
 
         // Menggunakan set(null)
-        // $ref = $this->database->getReference('hewan/karnivora/harimau/benggala') 
+        // $ref = $this->database->getReference('hewan/karnivora/harimau/benggala')
             // ->set(null);
 
         // Menggunakan update(["key" => null])

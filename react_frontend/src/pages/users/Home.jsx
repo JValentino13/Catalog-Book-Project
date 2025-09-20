@@ -3,41 +3,9 @@ import NavBar from '../../component/Navbar.jsx';
 import Footer from '../../component/Footer.jsx';
 import ProductCard from '../../component/ProductCard.jsx';
 import RecommendationCard from '../../component/RecommendationCard.jsx';
+import BukuFiksi from '../../services/data.jsx';
 
 function Home() {
-  // Data produk (biasanya dari API/state management)
-  const productsData = [
-    {
-      id: 1,
-      name: "Seni Berpikir Jernih",
-      category: "Psikologi",
-      price: "Rp 89.000",
-      image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-    },
-    {
-      id: 2,
-      name: "Sejarah Dunia yang Disembunyikan",
-      category: "Sejarah",
-      price: "Rp 112.000",
-      image: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-    },
-    {
-      id: 3,
-      name: "Atomic Habits",
-      category: "Pengembangan Diri",
-      price: "Rp 97.500",
-      image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-    },
-    {
-      id: 4,
-      name: "Filosofi Teras",
-      category: "Filsafat",
-      price: "Rp 85.000",
-      image: "https://images.unsplash.com/photo-1532012197267-da84d127e765?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80"
-    },
-  ];
-
-  // Data rekomendasi
   const recommendationsData = [
     {
       id: 1,
@@ -112,16 +80,8 @@ function Home() {
           Jelajahi macam-macam buku skripsi, jurnal, esai, karya ilmiah, biografi,
           autobiografi, buku motivasi, dan lainnya.
         </p>
-
-        <div className="product-grid">
-          {productsData.map(product => (
-            <ProductCard
-              key={product.id}
-              product={product}
-            />
-          ))}
-        </div>
-      </section>
+          <BukuFiksi/>
+      </section>  
 
       <section className="recommendation">
         <div className="container">

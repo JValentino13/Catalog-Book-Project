@@ -1,5 +1,4 @@
 import '../App.css';
-import { Link } from "react-router-dom";
 
 function Navbar() {
     return(
@@ -8,10 +7,11 @@ function Navbar() {
                 <div class="logo">Tabba</div>
                 <nav>
                 <ul>
-                    <li><Link to="/">Beranda</Link></li>
-                    <li><Link to="/">Kategori</Link></li>
-                    <li><Link to="/">Rekomendasi</Link></li>
-                    <li><Link to="/">Tentang Kami</Link></li>
+                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="#">Beranda</a></li>
+                    <li><a href="#">Kategori</a></li>
+                    <li><a href="#">Rekomendasi</a></li>
+                    <li><a href="#">Tentang Kami</a></li>
                 </ul>
                 </nav>
             </div>

@@ -19,7 +19,7 @@ use App\Http\Controllers\FirebaseConnectionController;
 //     return view('welcome');
 // });
 
-Route::get('/', [FirebaseConnectionController::class, '__cunstruct']);
+Route::get('/', [FirebaseConnectionController::class, '__construct']);
 
 
 Route::get('/create', [FirebaseConnectionController::class, 'set']);
