@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FirebaseConnectionController;
+use Kreait\Firebase\Factory;
 
 /*
 |
@@ -17,4 +18,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/buku_fiksi', [FirebaseConnectionController::class, 'read']);
-        
+Route::post('/register', [FirebaseConnectionController::class, 'register']);
+Route::post('/login', [FirebaseConnectionController::class, 'login']);

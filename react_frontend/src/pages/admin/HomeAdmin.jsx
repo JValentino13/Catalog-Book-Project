@@ -1,10 +1,10 @@
 import '../../App.css';
-import NavBar from '../../component/Navbar.jsx';
 import Footer from '../../component/Footer.jsx';
 import RecommendationCard from '../../component/RecommendationCard.jsx';
 import BukuFiksi from '../../services/DataBuku.jsx';
+import NavbarAdmin from '../../component/NavbarAdmin.jsx';
 
-function Home() {
+export default function HomeAdmin() {
   const recommendationsData = [
     {
       id: 1,
@@ -58,7 +58,7 @@ function Home() {
 
   return (
     <div>
-      <NavBar />
+      <NavbarAdmin />
       <section className="hero">
         <div className="container">
           <h1>Tambah Bacaan Kamu</h1>
@@ -107,5 +107,3 @@ function Home() {
     </div>
   );
 }
-
-export default Home;

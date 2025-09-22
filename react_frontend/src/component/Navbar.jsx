@@ -8,7 +8,7 @@ function Navbar() {
                 <div class="logo">Tabba</div>
                 <nav>
                 <ul>
-                    <li><Link to="/">Beranda</Link></li>
+                    <li><Link to="/home">Beranda</Link></li>
                     <li><Link to="/">Kategori</Link></li>
                     <li><Link to="/">Rekomendasi</Link></li>
                     <li><Link to="/">Tentang Kami</Link></li>

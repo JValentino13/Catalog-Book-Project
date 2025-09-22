@@ -1,43 +1,19 @@
-import axios from 'axios';
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { getDatabase } from "firebase/database";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000/api';
-
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  },
-});
-
-// Tambahkan interceptor untuk menambahkan token ke header
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-export const login = (credentials) => {
-  return api.post('/login', credentials);
+const firebaseConfig = {
+  apiKey: "AIzaSyDI7gJcThImcL9YsQJIuC54l1WOZ_hInjM",
+  authDomain: "catalog-book-9c9a3.firebaseapp.com",
+  databaseURL: "https://catalog-book-9c9a3-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "catalog-book-9c9a3",
+  storageBucket: "catalog-book-9c9a3.firebasestorage.app",
+  messagingSenderId: "54012740786",
+  appId: "1:54012740786:web:8917aeb257d99fbbbef5ab",
+  measurementId: "G-MBMCWZS06H"
 };
 
-export const register = (userData) => {
-  return api.post('/register', userData);
-};
-
-export const logout = () => {
-  return api.post('/logout');
-};
-
-export const getUser = () => {
-  return api.get('/user');
-};
-
-export default api;
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+export const database = getDatabase(app);
+export default app;
