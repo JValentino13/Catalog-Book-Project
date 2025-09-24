@@ -94,7 +94,7 @@ const Register = () => {
         setShowNotification(true);
         
         setTimeout(() => {
-          window.location.href = '/';
+          window.location.href = '/login';
         }, 1500);
 
       } else {
@@ -282,7 +282,7 @@ const Register = () => {
           </div>
 
           <div className='auth-footer'>
-            <Link to='/' className='auth-link'>
+            <Link to='/login' className='auth-link'>
               Masuk ke akun kamu
             </Link>
           </div>

@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Auth as FirebaseAuth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+
 
 
 class FirebaseConnectionController extends Controller
@@ -78,22 +82,7 @@ class FirebaseConnectionController extends Controller
 
     public function delete()
     {
-        /**
-         * 1. remove()
-         * 2. set(null)
-         * 3. update(["key" => null])
-         */
-
-        // Mengunakan remove()
         $ref = $this->database->getReference('fiksi/novel')->remove();
-
-        // Menggunakan set(null)
-        // $ref = $this->database->getReference('hewan/karnivora/harimau/benggala')
-        // ->set(null);
-
-        // Menggunakan update(["key" => null])
-        // $ref = $this->database->getReference('hewan/karnivora/harimau')
-        // ->update(["benggala" => null]);
     }
 
     public function register(Request $request)
@@ -106,21 +95,26 @@ class FirebaseConnectionController extends Controller
         ]);
 
         $factory = (new Factory)
-            ->withServiceAccount(storage_path('storage/firebase/firebase.json'))
+            ->withServiceAccount(storage_path('firebase/firebase.json'))
             ->withDatabaseUri(env('FIREBASE_DATABASE_URL'));
 
         $this->database = $factory->createDatabase();
         $this->auth = $factory->createAuth();
+        $plainTextToken = hash('sha256', Str::random(60));
 
+
+        // create user
         $newUser = $this->database->getReference('users')->push([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
             'role' => $validated['role'],
+            'token' => $plainTextToken,
         ]);
 
         return response()->json([
             'message' => 'User berhasil didaftarkan',
+            'token' => $plainTextToken,
             'uid' => $newUser->getKey(),
         ], 201);
     }
@@ -153,7 +147,7 @@ class FirebaseConnectionController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Email tidak ditemukan',
-            ], 401);    
+            ], 401);
         }
 
         if (!Hash::check($request->password, $userFound['password'])) {
@@ -169,7 +163,56 @@ class FirebaseConnectionController extends Controller
             'data' => [
                 'email' => $userFound['email'],
                 'name' => $userFound['name'],
-                'role' => $userFound['role']
+                'role' => $userFound['role'],
+                'token' => $userFound['token']
+
+            ]
+        ], 200);
+    }
+
+    public function auth(Request $request)
+    {
+        $bearerToken = $request->bearerToken();
+
+        if (!$bearerToken) {
+            return response()->json([
+                'logged_in' => false,
+                'message' => 'Token tidak ditemukan',
+            ], 401);
+        }
+
+        Log::info("Token diterima: " . $bearerToken);
+        $users = $this->database->getReference('users')->getValue();
+
+        if (!$users) {
+            return response()->json([
+                'logged_in' => false,
+                'message' => 'Tidak ada user',
+            ], 401);
+        }
+
+        $userFound = null;
+        foreach ($users as $userId => $user) {
+            Log::info("Cek token user: " . $user['token']);
+            if (isset($user['token']) && trim($user['token']) === trim($bearerToken)) {
+                $userFound = $user;
+                break;
+            }
+        }
+
+        if (!$userFound) {
+            return response()->json([
+                'logged_in' => false,
+                'message' => 'Token tidak valid',
+            ], 401);
+        }
+
+        return response()->json([
+            'logged_in' => true,
+            'user' => [
+                'email' => $userFound['email'],
+                'name' => $userFound['name'],
+                'role' => $userFound['role'],
             ]
         ], 200);
     }

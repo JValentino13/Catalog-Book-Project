@@ -10,9 +10,9 @@ function NavbarAdmin() {
                 <ul>
                     <li><Link to="/admin/dashboard">Dashboard</Link></li>
                     <li><Link to="/admin/home">Beranda</Link></li>
-                    <li><Link to="/">Kategori</Link></li>
-                    <li><Link to="/">Rekomendasi</Link></li>
-                    <li><Link to="/">Tentang Kami</Link></li>
+                    <li><Link to="/kategori">Kategori</Link></li>
+                    <li><Link to="/rekomendasi">Rekomendasi</Link></li>
+                    <li><Link to="/tentang_kami">Tentang Kami</Link></li>
                 </ul>
                 </nav>
             </div>

@@ -3,11 +3,9 @@
 import React, { useState } from "react";
 import "./login.css";
 import NotificationPopup from "../../component/notification.jsx";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import app from "../../services/api.jsx";
 
 const Login = () => {
-  const [formData, setFormData] = useState({  
+  const [formData, setFormData] = useState({
     email: "",
     password: "",
     remember: false,
@@ -42,17 +40,32 @@ const Login = () => {
           email: formData.email,
           password: formData.password,
         }),
-      });
+      }); 
 
       const data = await res.json();
 
       //keterangan login berhasil atau gagal
-      if (res.ok && data.success) {
+      if (res.ok && data.success && data.data && data.data.token) {
         localStorage.setItem("user", JSON.stringify(data.data));
+        localStorage.setItem("token", data.data.token);
+        console.log("Token yang dikirim:", data.data.token);
 
+
+        const res = await fetch("http://127.0.0.1:8000/api/auth", {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${data.data.token}`,
+          },
+        });
+
+        const authData = await res.json();
+        console.log("User aktif:", authData);
+          
         setNotificationMessage("Login berhasil! Selamat datang kembali.");
         setNotificationType("success");
         setShowNotification(true);
+        console.log(data.data);
 
         setTimeout(() => {
           if (data.data.role === "admin") {
