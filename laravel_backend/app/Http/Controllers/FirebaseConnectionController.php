@@ -23,66 +23,6 @@ class FirebaseConnectionController extends Controller
 
         $this->database = $factory->createDatabase();
         $this->auth = $factory->createAuth();
-
-
-        //cara koneksi create database tanpa this
-        // $reference = $database -> getReference('Coba Koneksi Firebase');
-        // $reference -> set(['connection' => true]);
-        // $snapShot = $reference -> getSnapshot();
-        // $value = $snapShot -> getValue();
-    }
-
-    public function read()
-    {
-        $ref = $this->database->getReference('fiksi/novel')->getValue();
-        $data = [];
-
-        foreach ($ref as $author => $books) {
-            foreach ($books as $key => $title) {
-                $id = (int)$key;
-                $data[] = [
-                    "id" => $id,
-                    "name" => $title,
-                    "author" => $author,
-                    "category" => "Novel Fiksi",
-                    "price" => "Rp " . (70000 + ($id * 5000)),
-                    "image" => "https://via.placeholder.com/150?text="
-                ];
-            }
-        }
-
-        $filteredData = array_filter($data, function ($item) {
-            return $item['id'] !== 0 && $item['id'] !== null;
-        });
-        $filteredData = array_values($filteredData);
-
-        return response()->json($filteredData);
-    }
-
-
-    public function update()
-    {
-        $ref = $this->database->getReference('fiksi/novel/Tere Liye')
-            ->push(["6" => "Pergi"]);
-    }
-
-    public function set()
-    {
-        $ref = $this->database->getReference('fiksi/novel')
-            ->set([
-                "Tere Liye" => [
-                    "1" => "Pulang",
-                    "2" => "Bumi Manusia",
-                    "3" => "Anak Semua Bangsa",
-                    "4" => "Hujan",
-                    "5" => "Bintang"
-                ]
-            ]);
-    }
-
-    public function delete()
-    {
-        $ref = $this->database->getReference('fiksi/novel')->remove();
     }
 
     public function register(Request $request)
@@ -217,7 +157,3 @@ class FirebaseConnectionController extends Controller
         ], 200);
     }
 }
-
-//NOTE
-// __construct = untuk inisialisasi awal, otomatis jalan saat controller diakses. Harus __construct tidak bisa nama lain
-// Untuk delete lebih simple menggunakan remove()

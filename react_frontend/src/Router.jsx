@@ -7,6 +7,7 @@ import Dashboard from "./pages/admin/Dashboard";
 import Register from "./pages/login/register";
 import HomeAdmin from "./pages/admin/HomeAdmin";
 import { useEffect, useState } from "react";
+import LoadingSpinner from "./LoadingSpinner.jsx";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -62,11 +63,12 @@ function App() {
   }, [location]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div><LoadingSpinner/></div>;
   }
 
   return (
     <Routes>
+      <Route path='/' element={<Login/>}/>
       <Route path='/login' element={<Login />} />
       <Route path='/register' element={<Register />} />
       {user ? (

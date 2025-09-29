@@ -20,9 +20,3 @@ use App\Http\Controllers\FirebaseConnectionController;
 // });
 
 Route::get('/', [FirebaseConnectionController::class, '__construct']);
-
-
-Route::get('/create', [FirebaseConnectionController::class, 'set']);
-Route::get('/read', [FirebaseConnectionController::class, 'read']);
-Route::get('/update', [FirebaseConnectionController::class, 'update']);
-Route::get('/delete', [FirebaseConnectionController::class, 'delete']);

@@ -3,8 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FirebaseConnectionController;
-use Kreait\Firebase\Factory;
-use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\BookController;
 
 /*
 |
@@ -19,6 +18,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/buku_fiksi', [FirebaseConnectionController::class, 'read']);
+
+Route::get('/books', [BookController::class, 'index']);
+Route::post('/books', [BookController::class, 'store']);
+Route::put('/books/{id}', [BookController::class, 'update']);
+Route::delete('/books/{id}', [BookController::class, 'destroy']);
+
 
 
 Route::post('/register', [FirebaseConnectionController::class, 'register']);

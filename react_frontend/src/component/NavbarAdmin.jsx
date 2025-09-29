@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 function NavbarAdmin() {
     return(
         <header>
-            <div class="container header-content">
-                <div class="logo">Tabba</div>
+            <div className="container header-content">
+                <div className="logo">Tabba</div>
                 <nav>
                 <ul>
                     <li><Link to="/admin/dashboard">Dashboard</Link></li>
