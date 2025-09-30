@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import "./Dashboard.css";
 import NotificationPopup from "../../component/notification.jsx";
-import NavbarAdmin from "../../component/NavbarAdmin.jsx";
+import Navbar from "../../component/Navbar.jsx";
 import EditBook from "./editBuku.jsx";
 
 const AdminDashboard = () => {
@@ -90,7 +90,7 @@ const AdminDashboard = () => {
     setShowLogoutConfirm(false);
   };
 
-  //tambah buku
+  // tambah buku
   const handleBookSubmit = async (e) => {
     e.preventDefault();
 
@@ -105,20 +105,20 @@ const AdminDashboard = () => {
     }
 
     try {
+      const data = new FormData();
+      data.append("nama", bookForm.nama);
+      data.append("penulis", bookForm.penulis);
+      data.append("kategori", bookForm.kategori);
+      data.append("rating", bookForm.rating);
+      data.append("status", bookForm.status || "Draft");
+      data.append("deskripsi", bookForm.deskripsi);
+      if (bookForm.coverImage) {
+        data.append("coverImage", bookForm.coverImage);
+      }
+
       const response = await fetch("http://127.0.0.1:8000/api/books", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          nama: bookForm.nama,
-          penulis: bookForm.penulis,
-          kategori: bookForm.kategori,
-          rating: bookForm.rating,
-          status: bookForm.status,
-          deskripsi: bookForm.deskripsi,
-        }),
+        body: data,
       });
 
       const result = await response.json();
@@ -127,13 +127,14 @@ const AdminDashboard = () => {
         setBooks([
           ...books,
           {
-            id: books.length + 1,
+            id: result.name ? result.name.split("/").pop() : books.length + 1,
             nama: bookForm.nama,
             penulis: bookForm.penulis,
             kategori: bookForm.kategori,
             rating: bookForm.rating,
             deskripsi: bookForm.deskripsi,
-            status: bookForm.status,
+            status: bookForm.status || "Draft",
+            coverImage: result.fields?.coverImage?.stringValue || null,
           },
         ]);
         setBookForm({
@@ -145,6 +146,7 @@ const AdminDashboard = () => {
           status: "Draft",
           coverImage: null,
         });
+        document.getElementById("coverImageInput").value = "";
         showNotificationMessage("Buku berhasil ditambahkan!");
       } else {
         showNotificationMessage(
@@ -249,12 +251,14 @@ const AdminDashboard = () => {
     });
   };
 
+  // Update Book
   const handleSaveBook = async (id, updatedData) => {
     try {
+      updatedData.append("_method", "PUT");
+
       const response = await fetch(`http://localhost:8000/api/books/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedData),
+        method: "POST",
+        body: updatedData,
       });
 
       const result = await response.json();
@@ -262,7 +266,7 @@ const AdminDashboard = () => {
       if (response.ok) {
         setBooks((prevBooks) =>
           prevBooks.map((book) =>
-            book.id === id ? { ...book, ...updatedData } : book
+            book.id === id ? { ...book, ...result.data } : book
           )
         );
         showNotificationMessage("Buku berhasil diperbarui");
@@ -277,7 +281,7 @@ const AdminDashboard = () => {
 
   return (
     <div className='admin-dashboard'>
-      <NavbarAdmin />
+      <Navbar />
 
       {/* Main Content */}
       <main className='admin-main'>
@@ -459,6 +463,7 @@ const AdminDashboard = () => {
                         <label>Cover Buku</label>
                         <input
                           type='file'
+                          id='coverImageInput'
                           onChange={(e) =>
                             setBookForm({
                               ...bookForm,

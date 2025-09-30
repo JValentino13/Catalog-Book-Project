@@ -73,7 +73,7 @@ function Home() {
       <section className="container section">
         <div className="section-header">
           <h2 className="section-title">Buku NonFiksi</h2>
-          <a href="#" className="view-all">View all</a>
+          <a href="" className="view-all">View all</a>
         </div>
         <p className="section-desc">
           Jelajahi macam-macam buku skripsi, jurnal, esai, karya ilmiah, biografi,

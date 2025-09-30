@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
@@ -20,14 +21,13 @@ class BookController extends Controller
     public function index()
     {
         $response = Http::get("{$this->baseUrl}/books?key={$this->apiKey}");
-
         if ($response->failed()) {
             return response()->json(['error' => 'Gagal ambil data'], 500);
         }
 
         $data = $response->json();
-
         $books = [];
+
         if (isset($data['documents'])) {
             foreach ($data['documents'] as $doc) {
                 $fields = $doc['fields'];
@@ -39,6 +39,7 @@ class BookController extends Controller
                     'rating' => $fields['rating']['stringValue'] ?? '',
                     'status' => $fields['status']['stringValue'] ?? 'Draft',
                     'deskripsi' => $fields['deskripsi']['stringValue'] ?? '',
+                    'coverImage' => $fields['coverImage']['stringValue'] ?? null,
                 ];
             }
         }
@@ -46,18 +47,34 @@ class BookController extends Controller
         return response()->json($books);
     }
 
-
-    // CREATE new book
+    // CREATE
+    // CREATE
     public function store(Request $request)
     {
+        $coverUrl = null;
+        if ($request->hasFile('coverImage')) {
+            $file = $request->file('coverImage');
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            // simpan ke public/uploads/covers
+            $path = public_path('uploads/covers');
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+
+            $file->move($path, $filename);
+            $coverUrl = url('uploads/covers/' . $filename);
+        }
+
         $data = [
             "fields" => [
                 "nama" => ["stringValue" => $request->nama],
                 "penulis" => ["stringValue" => $request->penulis],
                 "kategori" => ["stringValue" => $request->kategori],
                 "rating" => ["stringValue" => $request->rating],
-                "status" => ["stringValue" => "Draft"],
+                "status" => ["stringValue" => $request->status ?? "Draft"],
                 "deskripsi" => ["stringValue" => $request->deskripsi],
+                "coverImage" => ["stringValue" => $coverUrl ?? ""],
             ]
         ];
 
@@ -66,9 +83,36 @@ class BookController extends Controller
         return $response->json();
     }
 
-    // UPDATE book
+
+    // UPDATE
     public function update(Request $request, $id)
     {
+        $bookRef = "{$this->baseUrl}/books/{$id}?key={$this->apiKey}";
+
+        $coverUrl = null;
+        if ($request->hasFile('coverImage')) {
+            $file = $request->file('coverImage');
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            $path = public_path('uploads/covers');
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+
+            $file->move($path, $filename);
+            $coverUrl = url('uploads/covers/' . $filename);
+
+
+            if ($request->oldCover) {
+                $oldPath = public_path(str_replace(url('/'), '', $request->oldCover));
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
+        } else {
+            $coverUrl = $request->oldCover ?? null;
+        }
+
         $data = [
             "fields" => [
                 "nama" => ["stringValue" => $request->nama],
@@ -77,20 +121,30 @@ class BookController extends Controller
                 "rating" => ["stringValue" => $request->rating],
                 "deskripsi" => ["stringValue" => $request->deskripsi],
                 "status" => ["stringValue" => $request->status],
+                "coverImage" => ["stringValue" => $coverUrl ?? ""],
             ]
         ];
 
-        $response = Http::patch("{$this->baseUrl}/books/{$id}?key={$this->apiKey}", $data);
+        $response = Http::patch($bookRef, $data);
 
-        return $response->json();
+        if ($response->failed()) {
+            return response()->json(['error' => 'Gagal update data'], 500);
+        }
+
+        return response()->json(['success' => true]);
     }
 
 
-    // DELETE book
-    public function destroy($id)
-    {
-        $response = Http::delete("{$this->baseUrl}/books/{$id}?key={$this->apiKey}");
 
+    // DELETE
+    public function destroy($id, Request $request)
+    {
+        if ($request->coverImage) {
+            $oldFile = str_replace(asset('storage/') . '/', '', $request->coverImage);
+            Storage::disk('public')->delete($oldFile);
+        }
+
+        $response = Http::delete("{$this->baseUrl}/books/{$id}?key={$this->apiKey}");
         if ($response->failed()) {
             return response()->json(['error' => 'Gagal hapus data'], 500);
         }

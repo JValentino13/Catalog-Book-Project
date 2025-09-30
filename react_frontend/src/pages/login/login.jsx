@@ -47,6 +47,7 @@ const Login = () => {
       //keterangan login berhasil atau gagal
       if (res.ok && data.success && data.data && data.data.token) {
         localStorage.setItem("user", JSON.stringify(data.data));
+        localStorage.setItem("role", data.data.role);
         localStorage.setItem("token", data.data.token);
         console.log("Token yang dikirim:", data.data.token);
 

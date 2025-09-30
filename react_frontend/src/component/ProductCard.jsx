@@ -9,13 +9,15 @@ const ProductCard = ({ product }) => {
   return (
       <div className='product-card' data-id={product.id}>
         <div className='product-image'>
-          <img src={product.image} alt={product.name} className='product-img' />
+          {product.coverImage && (
+            <img src={product.coverImage} alt={product.nama} width="100%" />
+          )}
         </div>
         <div className='product-info'>
           <h3 className='product-name'>{product.nama}</h3>
-          <p className='product-author'>Penulis : {product.penulis}</p>
-          <p className='product-category'>{product.kategori}</p>
-          <p className='product-price'>{product.rating}</p>
+          <p className='product-author'>Penulis : <strong>{product.penulis}</strong></p>
+          <p className='product-category'>{product.kategori} : {product.deskripsi}</p>
+          <p className='product-rating'>⭐   {product.rating}</p>
           <button className='add-to-cart' onClick={handleAddToCart}>
             Lihat Detail
           </button>

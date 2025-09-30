@@ -1,13 +1,12 @@
-/** @format */
-
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Home from "./pages/users/Home";
 import Login from "./pages/login/login";
 import Dashboard from "./pages/admin/Dashboard";
 import Register from "./pages/login/register";
-import HomeAdmin from "./pages/admin/HomeAdmin";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "./LoadingSpinner.jsx";
+import CategoriesPage from "./pages/users/Category.jsx";
+import AboutPage from "./pages/users/AboutUs.jsx";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -71,19 +70,10 @@ function App() {
       <Route path='/' element={<Login/>}/>
       <Route path='/login' element={<Login />} />
       <Route path='/register' element={<Register />} />
-      {user ? (
-        <>
-          {user.role === "admin" && (
-            <>
-              <Route path='/admin/dashboard' element={<Dashboard />} />
-              <Route path='/admin/home' element={<HomeAdmin />} />
-            </>
-          )}
-          {user.role === "user" && <Route path='/home' element={<Home />} />}
-        </>
-      ) : (
-        <Route path='*' element={<Login />} />
-      )}
+      <Route path='/category' element={<CategoriesPage />} />
+      <Route path='/about' element={<AboutPage />} />
+      <Route path='/home' element={<Home />} />
+      <Route path='/admin/dashboard' element={<Dashboard />} />
     </Routes>
   );
 }
