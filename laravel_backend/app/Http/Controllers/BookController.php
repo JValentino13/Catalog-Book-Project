@@ -151,4 +151,35 @@ class BookController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    // SHOW (detail buku)
+    public function show($id)
+    {
+        $response = Http::get("{$this->baseUrl}/books/{$id}?key={$this->apiKey}");
+
+        if ($response->failed()) {
+            return response()->json(['error' => 'Gagal ambil detail buku'], 500);
+        }
+
+        $doc = $response->json();
+
+        if (!isset($doc['fields'])) {
+            return response()->json(['error' => 'Data buku tidak ditemukan'], 404);
+        }
+
+        $fields = $doc['fields'];
+
+        $book = [
+            'id' => $id,
+            'nama' => $fields['nama']['stringValue'] ?? '',
+            'penulis' => $fields['penulis']['stringValue'] ?? '',
+            'kategori' => $fields['kategori']['stringValue'] ?? '',
+            'rating' => $fields['rating']['stringValue'] ?? '',
+            'status' => $fields['status']['stringValue'] ?? 'Draft',
+            'deskripsi' => $fields['deskripsi']['stringValue'] ?? '',
+            'coverImage' => $fields['coverImage']['stringValue'] ?? null,
+        ];
+
+        return response()->json($book);
+    }
 }

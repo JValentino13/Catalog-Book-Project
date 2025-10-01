@@ -25,6 +25,7 @@ header {
     padding: 15px 0;
     position: sticky;
     top: 0;
+    height: 70px;
     z-index: 100;
 }
 
@@ -60,41 +61,102 @@ nav ul li a:hover {
     color: #4a6cf7;
 }
 
-/* Hero section */
+/* Hero Section */
 .hero {
-    padding: 60px 0;
-    text-align: center;
-    background-color: #fff;
-    margin-bottom: 40px;
+    background: #fff;
+    color: rgba(0, 0, 0, 0.567);
+    padding: 80px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="rgba(0, 0, 0, 0.100)" width="50" height="50"/></svg>');
+    background-size: 30px 30px;
+    opacity: 0.3;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.hero-content {
+    max-width: 600px;
 }
 
 .hero h1 {
-    font-size: 36px;
-    margin-bottom: 15px;
-    color: #222;
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 20px;
 }
 
 .hero p {
-    font-size: 18px;
-    color: #666;
-    max-width: 700px;
-    margin: 0 auto 30px;
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    opacity: 0.9;
+    max-width: 500px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 50px;
 }
 
 .btn {
     display: inline-block;
+    padding: 12px 30px;
     background-color: #4a6cf7;
     color: white;
-    padding: 12px 30px;
-    border-radius: 5px;
     text-decoration: none;
-    font-weight: 500;
-    transition: background-color 0.3s;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
 }
 
 .btn:hover {
-    background-color: #3b5be3;
+    background-color: #335af7;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
+
+/* Stats Section */
+.stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
 
 /* Section styles */
 .section {
@@ -102,15 +164,15 @@ nav ul li a:hover {
 }
 
 .section-header {
-    display: flex;
+    display: flex;  
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
 }
 
 .section-title {
     font-size: 24px;
     color: #222;
+    margin-top: 10px;
 }
 
 .view-all {
@@ -125,7 +187,8 @@ nav ul li a:hover {
 
 section .section-desc {
     color: #666;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
+    margin-top: -70px;
 }
 
 /* IMPROVED Product Card Styles */
@@ -268,10 +331,10 @@ section .section-desc {
 }
 
 .product-rating {
-  font-size: 16px;
-  color: #f59e0b;
-  font-weight: 500;
-  padding-bottom: 7px;
+    font-size: 16px;
+    color: #f59e0b;
+    font-weight: 500;
+    padding-bottom: 7px;
 }
 
 .stars {

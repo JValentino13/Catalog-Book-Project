@@ -5,6 +5,7 @@ import "./style/Category.css";
 import NavBar from "../../component/Navbar.jsx";
 import Footer from "../../component/Footer.jsx";
 import ProductCard from "../../component/ProductCard.jsx";
+import ProductDetail from "../../component/DetailProduct.jsx";
 
 const CategoriesPage = () => {
   const [books, setBooks] = useState([]);
@@ -12,22 +13,26 @@ const CategoriesPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [sortBy, setSortBy] = useState("rekomen");
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedBook, setSelectedBook] = useState(null);
   const [filters, setFilters] = useState({
     category: "all",
     rating: "all",
   });
 
   // Kategori untuk filter
-  const categories = React.useMemo(() => [
-    { id: "all", name: "Semua Kategori" },
-    { id: "fiksi", name: "Fiksi" },
-    { id: "non-fiksi", name: "Non-Fiksi" },
-    { id: "novel", name: "Novel" },
-    { id: "psikologi", name: "Psikologi" },
-    { id: "filsafat", name: "Filsafat" },
-    { id: "sejarah", name: "Sejarah" },
-    { id: "bisnis", name: "Bisnis" },
-  ], []);
+  const categories = React.useMemo(
+    () => [
+      { id: "all", name: "Semua Kategori" },
+      { id: "fiksi", name: "Fiksi" },
+      { id: "non-fiksi", name: "Non-Fiksi" },
+      { id: "novel", name: "Novel" },
+      { id: "psikologi", name: "Psikologi" },
+      { id: "filsafat", name: "Filsafat" },
+      { id: "sejarah", name: "Sejarah" },
+      { id: "bisnis", name: "Bisnis" },
+    ],
+    []
+  );
 
   const sortOptions = [
     { id: "rekomen", name: "Rekomendasi" },
@@ -70,7 +75,6 @@ const CategoriesPage = () => {
     loadData();
   }, [books, categories]);
 
-
   // Filter
   useEffect(() => {
     let result = [...books];
@@ -102,7 +106,7 @@ const CategoriesPage = () => {
 
     // Rating
     if (filters.rating !== "all") {
-      const minRating = parseInt(filters.rating);
+      const minRating = parseFloat(filters.rating);
       result = result.filter((book) => parseFloat(book.rating) >= minRating);
     }
 
@@ -312,7 +316,11 @@ const CategoriesPage = () => {
                   {filteredBooks.length > 0 ? (
                     <div className='books-grid'>
                       {filteredBooks.map((book) => (
-                        <ProductCard key={book.id} product={book} />
+                        <ProductCard
+                          key={book.id}
+                          product={book}
+                          onViewDetail={() => setSelectedBook(book)}
+                        />
                       ))}
                     </div>
                   ) : (
@@ -331,7 +339,12 @@ const CategoriesPage = () => {
           </div>
         </div>
       </section>
-
+      {selectedBook && (
+        <ProductDetail
+          book={selectedBook}
+          onClose={() => setSelectedBook(null)}
+        />
+      )}
       <Footer />
     </div>
   );

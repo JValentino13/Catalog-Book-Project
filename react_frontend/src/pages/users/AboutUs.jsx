@@ -1,200 +1,199 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './style/AboutUs.css';
-import NavBar from "../../component/Navbar.jsx";
-import Footer from "../../component/Footer.jsx";
+import NavBar from '../../component/Navbar.jsx';
+import Footer from '../../component/Footer.jsx';
 
 const AboutPage = () => {
-  const teamMembers = [
+  const features = [
     {
-      id: 1,
-      name: "Ahmad Wijaya",
-      position: "Founder & CEO",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      description: "Pecinta buku dengan pengalaman 10+ tahun di industri penerbitan",
-      social: {
-        linkedin: "#",
-        twitter: "#",
-        email: "#"
-      }
+      icon: '🚀',
+      title: 'Modern',
+      description: 'Platform buku digital dengan teknologi terkini untuk pengalaman membaca yang optimal'
     },
     {
-      id: 2,
-      name: "Sarah Santoso",
-      position: "Head of Content",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      description: "Ahli kurasi konten dengan latar belakang sastra dan jurnalistik",
-      social: {
-        linkedin: "#",
-        twitter: "#",
-        email: "#"
-      }
+      icon: '💎',
+      title: 'Kualitas',
+      description: 'Kurasi buku-buku berkualitas dari penulis dan penerbit terpercaya'
     },
     {
-      id: 3,
-      name: "Budi Pratama",
-      position: "CTO",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      description: "Spesialis teknologi dengan passion dalam membangun platform digital",
-      social: {
-        linkedin: "#",
-        twitter: "#",
-        email: "#"
-      }
+      icon: '🌍',
+      title: 'Akses Global',
+      description: 'Jangkauan luas dengan koleksi buku dari berbagai belahan dunia'
     },
     {
-      id: 4,
-      name: "Maya Sari",
-      position: "Community Manager",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
-      description: "Ahli dalam membangun dan mengelola komunitas pembaca",
-      social: {
-        linkedin: "#",
-        twitter: "#",
-        email: "#"
-      }
+      icon: '🔒',
+      title: 'Aman',
+      description: 'Platform yang aman dan terpercaya untuk transaksi digital Anda'
     }
   ];
 
-  const milestones = [
+  const stats = [
+    { number: '50,000+', label: 'Pembaca Aktif' },
+    { number: '10,000+', label: 'Koleksi Buku' },
+    { number: '500+', label: 'Penulis Partner' },
+    { number: '95%', label: 'Kepuasan Pengguna' }
+  ];
+
+  const team = [
     {
-      year: "2020",
-      title: "Tabba Didirikan",
-      description: "Dimulai dengan visi untuk membuat platform buku digital yang mudah diakses"
+      name: 'Alexandra Chen',
+      role: 'Founder & CEO',
+      image: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80',
+      bio: 'Visioner di balik terciptanya ekosistem membaca digital yang inklusif'
     },
     {
-      year: "2021",
-      title: "1000 Pengguna Pertama",
-      description: "Mencapai tonggak penting 1000 pengguna aktif dalam setahun pertama"
+      name: 'Marcus Rodriguez',
+      role: 'Head of Technology',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80',
+      bio: 'Mengawasi pengembangan platform dengan fokus pada user experience'
     },
     {
-      year: "2022",
-      title: "Ekspansi Koleksi",
-      description: "Menambah koleksi hingga 5000+ buku dari berbagai genre dan penerbit"
-    },
-    {
-      year: "2023",
-      title: "Aplikasi Mobile",
-      description: "Meluncurkan aplikasi mobile untuk pengalaman membaca yang lebih baik"
-    },
-    {
-      year: "2024",
-      title: "Komunitas Pembaca",
-      description: "Membangun komunitas aktif dengan 50.000+ anggota"
+      name: 'Sophie Williams',
+      role: 'Content Director',
+      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80',
+      bio: 'Bertanggung jawab atas kurasi konten dan hubungan dengan penerbit'
     }
   ];
 
   const values = [
     {
-      icon: "📚",
-      title: "Aksesibilitas",
-      description: "Kami percaya setiap orang berhak mendapatkan akses ke pengetahuan dan literatur berkualitas"
+      title: 'Innovation',
+      description: 'Terus berinovasi dalam menyajikan pengalaman membaca terbaik',
+      color: 'from-blue-500 to-cyan-500'
     },
     {
-      icon: "💡",
-      title: "Inovasi",
-      description: "Terus berinovasi dalam menyajikan pengalaman membaca yang lebih baik dan modern"
+      title: 'Quality',
+      description: 'Hanya menyajikan konten berkualitas tinggi yang terkurasi',
+      color: 'from-purple-500 to-pink-500'
     },
     {
-      icon: "🤝",
-      title: "Kolaborasi",
-      description: "Bekerja sama dengan penulis, penerbit, dan komunitas untuk berkembang bersama"
+      title: 'Community',
+      description: 'Membangun komunitas pembaca yang saling mendukung',
+      color: 'from-green-500 to-emerald-500'
     },
     {
-      icon: "❤️",
-      title: "Passion",
-      description: "Didorong oleh kecintaan kami terhadap buku dan keinginan untuk menyebarkan manfaat membaca"
+      title: 'Accessibility',
+      description: 'Membuat literatur berkualitas dapat diakses semua orang',
+      color: 'from-orange-500 to-red-500'
     }
   ];
 
   return (
     <div className="about-page">
       <NavBar />
-      
+
       {/* Hero Section */}
       <section className="about-hero">
         <div className="container">
-          <div className="hero-content">
-            <h1>Tentang Tabba</h1>
-            <p className="hero-subtitle">
-              Menghubungkan pembaca dengan dunia literasi melalui teknologi modern
-            </p>
-            <div className="hero-stats">
-              <div className="stat">
-                <span className="stat-number">50K+</span>
-                <span className="stat-label">Anggota Komunitas</span>
+          <div className="hero-grid">
+            <div className="hero-content">
+              <div className="badge">Tentang Kami</div>
+              <h1>
+                Menghubungkan <span className="gradient-text">Dunia</span> dengan 
+                <span className="gradient-text"> Kata</span>
+              </h1>
+              <p className="hero-description">
+                Tabba adalah platform revolusioner yang mengubah cara kita membaca dan 
+                berinteraksi dengan buku. Kami percaya bahwa setiap cerita berhak 
+                didengar, dan setiap pembaca berhak menemukan cerita mereka.
+              </p>
+              <div className="hero-actions">
+                <Link to="/register" className="btn-primary">
+                  Mulai Perjalanan
+                </Link>
+                <Link to="/categories" className="btn-secondary">
+                  Jelajahi Koleksi
+                </Link>
               </div>
-              <div className="stat">
-                <span className="stat-number">10K+</span>
-                <span className="stat-label">Koleksi Buku</span>
+            </div>
+            <div className="hero-visual">
+              <div className="floating-card card-1">
+                <div className="card-icon">📚</div>
+                <h4>Digital Library</h4>
+                <p>Koleksi lengkap dalam genggaman</p>
               </div>
-              <div className="stat">
-                <span className="stat-number">5</span>
-                <span className="stat-label">Tahun Pengalaman</span>
+              <div className="floating-card card-2">
+                <div className="card-icon">⭐</div>
+                <h4>Kurasi Ahli</h4>
+                <p>Buku-buku pilihan terbaik</p>
               </div>
-              <div className="stat">
-                <span className="stat-number">100+</span>
-                <span className="stat-label">Penerbit Mitra</span>
+              <div className="floating-card card-3">
+                <div className="card-icon">💫</div>
+                <h4>Experience</h4>
+                <p>Pengalaman membaca tak terlupakan</p>
+              </div>
+              <div className="main-visual">
+                <img 
+                  src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                  alt="Reading Experience" 
+                />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Mission & Vision Section */}
-      <section className="mission-vision">
+      {/* Stats Section */}
+      <section className="stats-section">
         <div className="container">
-          <div className="mission-vision-grid">
-            <div className="mission-card">
-              <div className="card-icon">🎯</div>
-              <h3>Misi Kami</h3>
-              <p>
-                Menjadi platform terdepan dalam mendemokratisasi akses ke literatur berkualitas 
-                dengan menghubungkan pembaca, penulis, dan penerbit dalam ekosistem yang saling 
-                menguntungkan.
-              </p>
-            </div>
-            <div className="vision-card">
-              <div className="card-icon">🔭</div>
-              <h3>Visi Kami</h3>
-              <p>
-                Menciptakan masyarakat yang melek literasi di mana setiap individu memiliki 
-                akses mudah ke pengetahuan dan dapat menemukan buku yang menginspirasi 
-                perjalanan hidup mereka.
-              </p>
+          <div className="stats-grid">
+            {stats.map((stat, index) => (
+              <div key={index} className="stat-item">
+                <div className="stat-number">{stat.number}</div>
+                <div className="stat-label">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Mission Section */}
+      <section className="mission-section">
+        <div className="container">
+          <div className="mission-content">
+            <div className="mission-text">
+              <h2>Visi & Misi Kami</h2>
+              <div className="mission-grid">
+                <div className="mission-card">
+                  <div className="mission-icon">🎯</div>
+                  <h3>Visi</h3>
+                  <p>
+                    Menjadi platform literasi digital terdepan yang menginspirasi 
+                    jutaan orang untuk menemukan kecintaan pada membaca melalui 
+                    teknologi yang manusiawi.
+                  </p>
+                </div>
+                <div className="mission-card">
+                  <div className="mission-icon">🚀</div>
+                  <h3>Misi</h3>
+                  <p>
+                    Menghubungkan pembaca dengan konten berkualitas, memberdayakan 
+                    penulis dan penerbit, serta menciptakan ekosistem membaca yang 
+                    berkelanjutan dan inklusif.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Our Story Section */}
-      <section className="our-story">
+      {/* Features Section */}
+      <section className="features-section">
         <div className="container">
-          <div className="story-content">
-            <div className="story-text">
-              <h2>Cerita Kami</h2>
-              <p>
-                Tabba dimulai pada tahun 2020 dari obrolan sederhana di sebuah kedai kopi 
-                tentang bagaimana sulitnya menemukan buku-buku berkualitas dalam format digital 
-                yang mudah diakses.
-              </p>
-              <p>
-                Didirikan oleh sekelompok pecinta buku dan teknolog, kami memiliki misi 
-                untuk menjembatani kesenjangan antara tradisi membaca buku fisik dengan 
-                kemudahan teknologi digital.
-              </p>
-              <p>
-                Hari ini, Tabba telah berkembang menjadi platform terpercaya dengan ribuan 
-                buku dari berbagai genre, melayani puluhan ribu pembaca setia di seluruh 
-                Indonesia.
-              </p>
-            </div>
-            <div className="story-image">
-              <img 
-                src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
-                alt="Team collaboration" 
-              />
-            </div>
+          <div className="section-header">
+            <h2>Mengapa Memilih Tabba?</h2>
+            <p>Platform membaca modern dengan segudang keunggulan</p>
+          </div>
+          <div className="features-grid">
+            {features.map((feature, index) => (
+              <div key={index} className="feature-card">
+                <div className="feature-icon">{feature.icon}</div>
+                <h3>{feature.title}</h3>
+                <p>{feature.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -203,15 +202,15 @@ const AboutPage = () => {
       <section className="values-section">
         <div className="container">
           <div className="section-header">
-            <h2>Nilai-Nilai Kami</h2>
-            <p>Prinsip-prinsip yang membimbing setiap langkah kami</p>
+            <h2>Nilai Inti Kami</h2>
+            <p>Prinsip yang membimbing setiap keputusan kami</p>
           </div>
           <div className="values-grid">
             {values.map((value, index) => (
-              <div key={index} className="value-card">
-                <div className="value-icon">{value.icon}</div>
+              <div key={index} className={`value-card ${value.color}`}>
                 <h3>{value.title}</h3>
                 <p>{value.description}</p>
+                <div className="value-decoration"></div>
               </div>
             ))}
           </div>
@@ -222,51 +221,20 @@ const AboutPage = () => {
       <section className="team-section">
         <div className="container">
           <div className="section-header">
-            <h2>Tim Kami</h2>
-            <p>Orang-orang di balik kesuksesan Tabba</p>
+            <h2>Tim Inti Kami</h2>
+            <p>Orang-orang berdedikasi di balik Tabba</p>
           </div>
           <div className="team-grid">
-            {teamMembers.map(member => (
-              <div key={member.id} className="team-card">
+            {team.map((member, index) => (
+              <div key={index} className="team-card">
                 <div className="member-image">
                   <img src={member.image} alt={member.name} />
+                  <div className="image-overlay"></div>
                 </div>
                 <div className="member-info">
                   <h3>{member.name}</h3>
-                  <p className="position">{member.position}</p>
-                  <p className="description">{member.description}</p>
-                  <div className="social-links">
-                    <a href={member.social.linkedin} aria-label="LinkedIn">
-                      <span>💼</span>
-                    </a>
-                    <a href={member.social.twitter} aria-label="Twitter">
-                      <span>🐦</span>
-                    </a>
-                    <a href={member.social.email} aria-label="Email">
-                      <span>📧</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Milestones Section */}
-      <section className="milestones-section">
-        <div className="container">
-          <div className="section-header">
-            <h2>Perjalanan Kami</h2>
-            <p>Tonggak penting dalam perjalanan Tabba</p>
-          </div>
-          <div className="timeline">
-            {milestones.map((milestone, index) => (
-              <div key={index} className="timeline-item">
-                <div className="timeline-year">{milestone.year}</div>
-                <div className="timeline-content">
-                  <h3>{milestone.title}</h3>
-                  <p>{milestone.description}</p>
+                  <p className="role">{member.role}</p>
+                  <p className="bio">{member.bio}</p>
                 </div>
               </div>
             ))}
@@ -275,20 +243,20 @@ const AboutPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="about-cta">
+      <section className="cta-section">
         <div className="container">
           <div className="cta-content">
-            <h2>Bergabunglah dengan Komunitas Kami</h2>
+            <h2>Siap Memulai Perjalanan Membaca Anda?</h2>
             <p>
-              Jadilah bagian dari perjalanan kami dalam membangun masyarakat yang lebih melek literasi. 
-              Temukan buku-buku inspiratif, bergabung dengan diskusi, dan kembangkan pengetahuan Anda.
+              Bergabunglah dengan komunitas pembaca modern dan temukan dunia 
+              literasi yang tak terbatas bersama Tabba.
             </p>
-            <div className="cta-buttons">
+            <div className="cta-actions">
               <Link to="/register" className="btn-primary">
                 Daftar Sekarang
               </Link>
-              <Link to="/categories" className="btn-secondary">
-                Jelajahi Buku
+              <Link to="/categories" className="btn-outline">
+                Lihat Koleksi
               </Link>
             </div>
           </div>

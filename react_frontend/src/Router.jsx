@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import LoadingSpinner from "./LoadingSpinner.jsx";
 import CategoriesPage from "./pages/users/Category.jsx";
 import AboutPage from "./pages/users/AboutUs.jsx";
+import ProductDetail from "./component/DetailProduct.jsx";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -74,6 +75,7 @@ function App() {
       <Route path='/about' element={<AboutPage />} />
       <Route path='/home' element={<Home />} />
       <Route path='/admin/dashboard' element={<Dashboard />} />
+      <Route path="/product/:productId" element={<ProductDetail />} />
     </Routes>
   );
 }
