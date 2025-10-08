@@ -21,4 +21,4 @@ cmds = [
 ]
 
 [start]
-startCommand = "cd laravel_backend && php artisan serve --host 0.0.0.0 --port ${PORT}"
+cmd = "cd laravel_backend && php artisan serve --host=0.0.0.0 --port=$PORT"
