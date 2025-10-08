@@ -1,55 +1,78 @@
-/* Recommendations Page Styles */
-.recommendations-page {
-  min-height: 100vh;
-  background-color: #f8f9fa;
+.canadian-section {
+    background-color: #fafafa;
+    font-family: 'Arial', sans-serif;
+    padding: 50px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.recommendations-hero {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 80px 0 60px;
-  text-align: center;
+.carousel-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.recommendations-hero .hero-content h1 {
-  font-size: 36px;
-  margin-bottom: 20px;
-  font-weight: 700;
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    gap: 20px;
 }
 
-.recommendations-hero .hero-content p {
-  font-size: 18px;
-  max-width: 600px;
-  margin: 0 auto 30px;
-  opacity: 0.9;
-  line-height: 1.6;
+.carousel-item {
+    min-width: 300px;
+    height: 350px;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    position: relative;
+    transform: skew(-10deg);
 }
 
-.hero-stats {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  margin-top: 30px;
+.carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
 }
 
-.stat {
-  text-align: center;
+.carousel-item:hover img {
+    transform: scale(1.05);
 }
 
-.stat-number {
-  display: block;
-  font-size: 32px;
-  font-weight: bold;
-  margin-bottom: 5px;
+
+.overlay-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 10;
+    pointer-events: none;
+    font-weight: bold;
+    line-height: 1.2;
 }
 
-.stat-label {
-  font-size: 14px;
-  opacity: 0.9;
+.overlay-text h1 {
+    font-size: 6rem;
+    margin: 0;
+}
+
+.overlay-text .line1 {
+    color: transparent;
+    -webkit-text-stroke: 2px rgb(239 233 224);
+}
+
+.overlay-text .line2 {
+    color: transparent;
+    -webkit-text-stroke: 2px rgb(239 233 224);
 }
 
 .recommendations-section {
-  padding: 50px 0;
+  padding-right: 20rem;
 }
 
 .recommendations-content {
@@ -88,8 +111,8 @@
 }
 
 .clear-filters {
-  background:  #3b5be3;
-  border: solid 4px  #3b5be3;
+  background:  rgb(15 158 153);
+  border: solid 4px  rgb(15 158 153);
   color: white;
   font-size: 14px;
   cursor: pointer;
@@ -97,10 +120,6 @@
   margin: 2px;
   border-radius: 10px;
   font-weight: 400;
-}
-
-.clear-filters:hover {
-  background:  #3555e1;
 }
 
 .filter-group {
@@ -129,7 +148,7 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #4a6cf7;
+  border-color: rgb(15 158 153);
 }
 
 .search-icon {
@@ -171,8 +190,8 @@
 }
 
 .filter-option input[type="radio"]:checked + .checkmark {
-  border-color: #4a6cf7;
-  background: #4a6cf7;
+  border-color: rgb(15 158 153);
+  background: rgb(15 158 153);
 }
 
 .filter-option input[type="radio"]:checked + .checkmark::after {
@@ -181,6 +200,11 @@
   height: 6px;
   background: white;
   border-radius: 50%;
+}
+.book-count {
+  margin-left: auto;
+  font-size: 12px;
+  color: #9ca3af;
 }
 
 /* Main Content */
@@ -235,7 +259,7 @@
 
 .sort-select:focus {
   outline: none;
-  border-color: #4a6cf7;
+  border-color: rgb(15 158 153);
 }
 
 /* Active Filters */
@@ -365,7 +389,7 @@
   width: 40px;
   height: 40px;
   border: 3px solid #f3f3f3;
-  border-top: 3px solid #4a6cf7;
+  border-top: 3px solid rgb(15 158 153);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 20px;
@@ -401,7 +425,7 @@
 }
 
 .btn-clear {
-  background: #4a6cf7;
+  background: rgb(15 158 153);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -412,7 +436,7 @@
 }
 
 .btn-clear:hover {
-  background: #3b5be3;
+  background: rgb(8, 123, 119);
 }
 
 /* Responsive Design */

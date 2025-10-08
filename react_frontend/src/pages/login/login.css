@@ -8,7 +8,7 @@
 /* Bagian kiri dengan ilustrasi */
 .left-section {
   flex: 1;
-  background: linear-gradient(135deg, #4a6cf7 0%, #3b5be3 100%);
+  background: linear-gradient(135deg, rgb(15 158 153) 0%, #3b5be3 100%);
   color: white;
   display: flex;
   flex-direction: column;
@@ -132,7 +132,7 @@
 }
 
 .input-with-icon input:focus {
-  border-color: #4a6cf7;
+  border-color: rgb(15 158 153);
   outline: none;
   box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
 }
@@ -154,7 +154,7 @@
 }
 
 .forgot-password {
-  color: #4a6cf7;
+  color: rgb(15 158 153);
   text-decoration: none;
   font-weight: 500;
 }
@@ -166,7 +166,7 @@
 .login-button {
   width: 100%;
   padding: 15px;
-  background-color: #4a6cf7;
+  background-color: rgb(15 158 153);
   color: white;
   border: none;
   border-radius: 8px;
@@ -240,7 +240,7 @@
 }
 
 .signup-link a {
-  color: #4a6cf7;
+  color: rgb(15 158 153);
   text-decoration: none;
   font-weight: 500;
 }
@@ -264,6 +264,18 @@
   margin-top: 5px;
   display: block;
 }
+
+/*Login Icon*/
+.login-icon {
+    font-size: 24px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #f0f4ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
 /* Responsif */
 @media (max-width: 900px) {

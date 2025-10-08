@@ -48,7 +48,7 @@ class BookController extends Controller
     }
 
     // CREATE
-    // CREATE
+
     public function store(Request $request)
     {
         $coverUrl = null;

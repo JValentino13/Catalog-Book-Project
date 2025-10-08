@@ -8,7 +8,7 @@
 /* Bagian kiri dengan ilustrasi */
 .auth-left {
   flex: 1;
-  background: linear-gradient(135deg, #4a6cf7 0%, #3b5be3 100%);
+  background: linear-gradient(135deg, rgb(15 158 153) 0%, #3b5be3 100%);
   color: white;
   display: flex;
   flex-direction: column;
@@ -127,7 +127,7 @@
 }
 
 .form-group input:focus {
-  border-color: #4a6cf7;
+  border-color: rgb(15 158 153);
   outline: none;
   box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
 }
@@ -162,7 +162,7 @@
 }
 
 .role-option input[type="radio"]:checked + .role-card {
-  border-color: #4a6cf7;
+  border-color: rgb(15 158 153);
   background-color: #f0f4ff;
 }
 
@@ -197,10 +197,11 @@
 .checkbox-label input[type="checkbox"] {
   margin-right: 10px;
   margin-top: 3px;
+  width: 16px;
 }
 
 .checkbox-label a {
-  color: #4a6cf7;
+  color: rgb(15 158 153);
   text-decoration: none;
 }
 
@@ -212,7 +213,7 @@
 .auth-button {
   width: 100%;
   padding: 15px;
-  background-color: #4a6cf7;
+  background-color: rgb(15 158 153);
   color: white;
   border: none;
   border-radius: 8px;
@@ -260,7 +261,7 @@
 }
 
 .auth-link {
-  color: #4a6cf7;
+  color: rgb(15 158 153);
   text-decoration: none;
   font-weight: 500;
 }

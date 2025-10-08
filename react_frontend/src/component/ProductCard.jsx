@@ -22,7 +22,7 @@ const ProductCard = ({ product, onViewDetail }) => {
             ? product.deskripsi.substring(0, 120) + "..."
             : product.deskripsi}
         </p>
-        <p className='product-rating'>⭐ {product.rating}</p>
+        <p className='product-rating'><i class="fi fi-br-star-sharp-half-stroke"></i> {product.rating}</p>
         <button
           className='add-to-cart'
           onClick={() => onViewDetail(product)}

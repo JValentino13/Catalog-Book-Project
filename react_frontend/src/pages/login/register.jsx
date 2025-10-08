@@ -1,9 +1,14 @@
+/** @format */
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./register.css";
-import NotificationPopup from '../../component/notification.jsx';
+import NotificationPopup from "../../component/notification.jsx";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getDatabase, ref, set, get, child } from "firebase/database";
+import { auth } from "../../services/api.jsx";
 
-const Register = () => {
+const Register = (onSignin) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -16,8 +21,47 @@ const Register = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState('');
-  const [notificationType, setNotificationType] = useState('success');
+  const [notificationMessage, setNotificationMessage] = useState("");
+  const [notificationType, setNotificationType] = useState("success");
+
+  const db = getDatabase();
+
+  const signInWithGoogle = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+
+      const user = result.user;
+      const userRef = ref(db, "users/" + user.uid);
+      const snapshot = await get(child(ref(db), `users/${user.uid}`));
+
+      if (!snapshot.exists()) {
+        await set(userRef, {
+          email: user.email,
+          name: user.displayName,
+          role: "user",
+          token: user.uid,
+          password: null,
+        });
+        console.log("User baru disimpan ke database");
+        setNotificationMessage(
+          "Registrasi berhasil! Silakan login dengan akun Anda."
+        );
+        setNotificationType("success");
+        setShowNotification(true);
+
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 1500);
+      } else {
+        console.log("User sudah ada di database:", snapshot.val());
+      }
+
+      return user;
+    } catch (error) {
+      console.error("Error sign in:", error);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -89,20 +133,21 @@ const Register = () => {
       console.log(data);
 
       if (res.ok) {
-        setNotificationMessage('Registrasi berhasil! Silakan login dengan akun Anda.');
-        setNotificationType('success');
+        setNotificationMessage(
+          "Registrasi berhasil! Silakan login dengan akun Anda."
+        );
+        setNotificationType("success");
         setShowNotification(true);
-        
-        setTimeout(() => {
-          window.location.href = '/login';
-        }, 1500);
 
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 1500);
       } else {
         setErrors({ general: data.message || "Terjadi kesalahan" });
       }
     } catch (error) {
-      setNotificationMessage('Registrasi gagal. Silakan coba lagi.');
-      setNotificationType('error');
+      setNotificationMessage("Registrasi gagal. Silakan coba lagi.");
+      setNotificationType("error");
       setShowNotification(true);
     } finally {
       setIsSubmitting(false);
@@ -207,7 +252,7 @@ const Register = () => {
               )}
             </div>
 
-            <div className='form-group'>
+            {/* <div className='form-group'>
               <label htmlFor='role'>Daftar Sebagai</label>
               <div className='role-selection'>
                 <label className='role-option'>
@@ -247,6 +292,29 @@ const Register = () => {
                     </div>
                   </div>
                 </label>
+              </div>
+            </div> */}
+
+            <div className='divider'>
+              <span>Atau lanjutkan dengan</span>
+            </div>
+
+            <div className='social-login'>
+              <div className='social-btn'>
+                <img
+                  className='google-btn login-icon'
+                  src='https://www.citypng.com/public/uploads/preview/google-logo-icon-gsuite-hd-701751694791470gzbayltphh.png'
+                  alt='google'
+                  onClick={signInWithGoogle}></img>
+              </div>
+              <div className='social-btn'>
+                <img className='tabba-btn login-icon' src='favicon.ico' alt="tabba"></img>
+              </div>
+              <div className='social-btn'>
+                <img
+                  alt="github"
+                  className='gitub-btn login-icon'
+                  src='https://pngimg.com/uploads/github/github_PNG40.png'></img>
               </div>
             </div>
 
@@ -297,7 +365,6 @@ const Register = () => {
           duration={1500}
         />
       )}
-
     </div>
   );
 };

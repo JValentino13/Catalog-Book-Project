@@ -1,3 +1,4 @@
+/** @format */
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Home from "./pages/users/Home";
 import Login from "./pages/login/login";
@@ -8,6 +9,8 @@ import LoadingSpinner from "./LoadingSpinner.jsx";
 import CategoriesPage from "./pages/users/Category.jsx";
 import AboutPage from "./pages/users/AboutUs.jsx";
 import ProductDetail from "./component/DetailProduct.jsx";
+import Navbar from "./component/Navbar.jsx"; // pastikan path sesuai
+import Footer from "./component/Footer.jsx";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -16,17 +19,20 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname === "/login" || location.pathname === "/register") {
+    const publicPaths = ["/login", "/register"];
+    const token = localStorage.getItem("token");
+
+    // Jika belum login dan bukan di halaman login/register
+    if (!token && !publicPaths.includes(location.pathname)) {
+      navigate("/home");
+      setUser(null);
       setLoading(false);
       return;
     }
 
+    // Jika sudah login, ambil data user
     const checkAuth = async () => {
-      const token = localStorage.getItem("token");
-      console.log("Token yang dikirim:", token);
-
       if (!token) {
-        navigate("/login");
         setLoading(false);
         return;
       }
@@ -42,17 +48,18 @@ function App() {
         });
 
         const data = await res.json();
-        console.log("Respon auth:", data.token);
-
         if (data.logged_in) {
           setUser(data.user);
+          localStorage.setItem("role", data.user.role);
         } else {
           localStorage.removeItem("token");
+          localStorage.removeItem("role");
           navigate("/login");
         }
       } catch (error) {
         console.error("Error saat cek auth:", error);
         localStorage.removeItem("token");
+        localStorage.removeItem("role");
         navigate("/login");
       } finally {
         setLoading(false);
@@ -60,23 +67,29 @@ function App() {
     };
 
     checkAuth();
-  }, [location]);
+  }, [location, navigate]);
 
   if (loading) {
-    return <div><LoadingSpinner/></div>;
+    return (
+      <div>
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   return (
-    <Routes>
-      <Route path='/' element={<Login/>}/>
-      <Route path='/login' element={<Login />} />
-      <Route path='/register' element={<Register />} />
-      <Route path='/category' element={<CategoriesPage />} />
-      <Route path='/about' element={<AboutPage />} />
-      <Route path='/home' element={<Home />} />
-      <Route path='/admin/dashboard' element={<Dashboard />} />
-      <Route path="/product/:productId" element={<ProductDetail />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/home' element={<Home />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
+        <Route path='/category' element={<CategoriesPage />} />
+        <Route path='/about' element={<AboutPage />} />
+        <Route path='/admin/dashboard' element={<Dashboard />} />
+        <Route path='/product/:productId' element={<ProductDetail />} />
+      </Routes>
+    </>
   );
 }
 

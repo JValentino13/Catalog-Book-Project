@@ -46,34 +46,23 @@ const CategoriesPage = () => {
     fetch("http://127.0.0.1:8000/api/books")
       .then((res) => res.json())
       .then((data) => {
-        console.log("Books:", data);
-        setBooks(data || []);
+        const filtered = (data || []).filter(
+          (item) => item.status === "Published"
+        );
+        setBooks(filtered);
       })
-      .catch((err) => console.error("Error fetch buku:", err));
+      .catch((err) => console.error("Error fetch:", err));
   }, []);
 
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const categoryCounts = categories.map((cat) => {
-        if (cat.id === "all") {
-          return { ...cat, count: books.length };
-        }
-        const count = books.filter((book) => book.kategori === cat.id).length;
-        return { ...cat, count };
-      });
-
-      categories.forEach((cat, index) => {
-        categories[index].count = categoryCounts[index].count;
-      });
-
       setIsLoading(false);
     };
 
     loadData();
-  }, [books, categories]);
+  }, [books]);
 
   // Filter
   useEffect(() => {
@@ -86,6 +75,8 @@ const CategoriesPage = () => {
     } else if (sortBy === "nama_desc") {
       result.sort((a, b) => b.nama.localeCompare(a.nama));
     } else if (sortBy === "rekomen") {
+      // Default sorting - bisa ditambahkan algoritma rekomendasi
+      result.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
     }
 
     // Search
@@ -129,33 +120,78 @@ const CategoriesPage = () => {
     setSortBy("rekomen");
   };
 
+  //Header Section
+  const images = [
+    "https://i.pinimg.com/736x/f5/cb/84/f5cb84edc8d6ab15e513c94f21ed3049.jpg",
+    "https://i.pinimg.com/1200x/37/bc/3e/37bc3eba6c653b620c8520ec246dc01c.jpg",
+    "https://i.pinimg.com/1200x/26/a2/7e/26a27e29f45c1ddbe3e776a52a7c435e.jpg",
+    "https://i.pinimg.com/1200x/47/f4/4c/47f44c8b78033c2c24ec4fb243cfe1b2.jpg",
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const itemWidth = 320;
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => {
+        const next = prev + 1;
+        if (next >= images.length - 3) {
+          setTimeout(() => {
+            setCurrentIndex(0);
+          }, 50);
+          return prev; 
+        }
+        return next;
+      });
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleMouseEnter = () => {
+    // Pause animation
+  };
+
+  const handleMouseLeave = () => {
+    // Resume animation (dihandle oleh useEffect)
+  };
+
   return (
     <div className='recommendations-page'>
       <NavBar />
 
-      {/* Hero Section */}
-      <section className='recommendations-hero'>
-        <div className='container'>
-          <div className='hero-content'>
-            <h1>Rekomendasi Buku Terbaik</h1>
-            <p>
-              Temukan buku-buku pilihan kami yang telah dikurasi khusus untuk
-              Anda. Berdasarkan rating, popularitas, dan tren terkini.
-            </p>
-            <div className='hero-stats'>
-              <div className='stat'>
-                <span className='stat-number'>{books.length}+</span>
-                <span className='stat-label'>Buku Tersedia</span>
-              </div>
-              <div className='stat'>
-                <span className='stat-number'>4.5+</span>
-                <span className='stat-label'>Rating Rata-rata</span>
-              </div>
-              <div className='stat'>
-                <span className='stat-number'>50+</span>
-                <span className='stat-label'>Buku Bestseller</span>
+      <section>
+        <div className='canadian-section'>
+          <div
+            className='carousel-container'
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}>
+            <div
+              className='carousel-track'
+              style={{
+                transform: `translateX(-${currentIndex * itemWidth}px)`,
+              }}>
+              {images.map((img, index) => (
+                <div key={index} className='carousel-item'>
+                  <img src={img} alt={`Student ${index + 1}`} />
+                </div>
+              ))}
+            </div>
+            <div className='overlay-text-container'>
+              <div className='overlay-text'>
+                <h1>
+                  <span className='line1'>CATALOG</span>
+                  <br />
+                  <span className='line2'>BOOKS</span>
+                </h1>
               </div>
             </div>
+          </div>
+
+          <div className='footer'>
+            <a href='#' className='cta-button'>
+              FIND YOUR BOOKS <span>↓</span>
+            </a>
           </div>
         </div>
       </section>
@@ -163,12 +199,12 @@ const CategoriesPage = () => {
       <section className='recommendations-section'>
         <div className='container'>
           <div className='recommendations-content'>
-            {/* Filters */}
+            {/* Filters Sidebar */}
             <aside className='filters-sidebar'>
               <div className='filters-header'>
                 <h3>Filter Buku</h3>
                 <button className='clear-filters' onClick={clearAllFilters}>
-                  Reset
+                  Reset Filter
                 </button>
               </div>
 
@@ -183,7 +219,6 @@ const CategoriesPage = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className='search-input'
                   />
-                  <span className='search-icon'>🔍</span>
                 </div>
               </div>
 
@@ -203,7 +238,16 @@ const CategoriesPage = () => {
                         }
                       />
                       <span className='checkmark'></span>
-                      <span>{category.name}</span>
+                      <span className='filter-text'>{category.name}</span>
+                      <span className='book-count'>
+                        {
+                          books.filter(
+                            (b) =>
+                              category.id === "all" ||
+                              b.kategori.toLowerCase() === category.id
+                          ).length
+                        }
+                      </span>
                     </label>
                   ))}
                 </div>
@@ -225,7 +269,10 @@ const CategoriesPage = () => {
                         }
                       />
                       <span className='checkmark'></span>
-                      <span>{rating}+ ⭐</span>
+                      <span className='filter-text'>
+                        {rating}+{" "}
+                        <i class='fi fi-br-star-sharp-half-stroke'></i>
+                      </span>
                     </label>
                   ))}
                   <label className='filter-option'>
@@ -239,7 +286,7 @@ const CategoriesPage = () => {
                       }
                     />
                     <span className='checkmark'></span>
-                    <span>Semua Rating</span>
+                    <span className='filter-text'>Semua Rating</span>
                   </label>
                 </div>
               </div>
@@ -276,12 +323,13 @@ const CategoriesPage = () => {
                 filters.rating !== "all" ||
                 searchTerm) && (
                 <div className='active-filters'>
-                  <span>Filter aktif:</span>
+                  <span className='active-filters-label'>Filter aktif:</span>
                   {filters.category !== "all" && (
                     <span className='active-filter'>
                       {categories.find((c) => c.id === filters.category)?.name}
                       <button
-                        onClick={() => handleFilterChange("category", "all")}>
+                        onClick={() => handleFilterChange("category", "all")}
+                        className='remove-filter'>
                         ×
                       </button>
                     </span>
@@ -290,7 +338,8 @@ const CategoriesPage = () => {
                     <span className='active-filter'>
                       Rating {filters.rating}+
                       <button
-                        onClick={() => handleFilterChange("rating", "all")}>
+                        onClick={() => handleFilterChange("rating", "all")}
+                        className='remove-filter'>
                         ×
                       </button>
                     </span>
@@ -298,7 +347,11 @@ const CategoriesPage = () => {
                   {searchTerm && (
                     <span className='active-filter'>
                       Pencarian: "{searchTerm}"
-                      <button onClick={() => setSearchTerm("")}>×</button>
+                      <button
+                        onClick={() => setSearchTerm("")}
+                        className='remove-filter'>
+                        ×
+                      </button>
                     </span>
                   )}
                 </div>
@@ -325,7 +378,7 @@ const CategoriesPage = () => {
                     </div>
                   ) : (
                     <div className='empty-state'>
-                      <div className='empty-icon'>🔍</div>
+                      <i className='fi fi-br-books-lightbulb empty-icon '></i>
                       <h3>Tidak ada buku ditemukan</h3>
                       <p>Coba ubah filter atau kata kunci pencarian Anda</p>
                       <button className='btn-clear' onClick={clearAllFilters}>
@@ -339,12 +392,14 @@ const CategoriesPage = () => {
           </div>
         </div>
       </section>
+
       {selectedBook && (
         <ProductDetail
           book={selectedBook}
           onClose={() => setSelectedBook(null)}
         />
       )}
+
       <Footer />
     </div>
   );

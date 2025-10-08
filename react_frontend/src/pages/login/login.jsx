@@ -3,8 +3,11 @@
 import React, { useState } from "react";
 import "./login.css";
 import NotificationPopup from "../../component/notification.jsx";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../../services/api.jsx";
+import { getDatabase, ref, set, get, child } from "firebase/database";
 
-const Login = () => {
+const Login = ({ onLogin }) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -24,6 +27,67 @@ const Login = () => {
     }));
   };
 
+  //Google login
+  const handleGoogleLogin = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+
+      const user = result.user;
+      const db = getDatabase();
+      const userRef = ref(db, "users/" + user.uid);
+
+      const snapshot = await get(child(ref(db), `users/${user.uid}`));
+
+      if (!snapshot.exists()) {
+        const newUser = {
+          email: user.email,
+          name: user.displayName,
+          role: "user",
+          token: user.uid,
+          password: null,
+        };
+
+        await set(userRef, newUser);
+
+        // simpan ke localStorage
+        localStorage.setItem("user", JSON.stringify(newUser));
+        localStorage.setItem("role", newUser.role);
+        localStorage.setItem("token", newUser.token);
+
+        console.log("User baru dibuat:", newUser);
+
+        setNotificationMessage("Login berhasil! Selamat datang ");
+        setNotificationType("success");
+        setShowNotification(true);
+
+        setTimeout(() => {
+          window.location.href = "/home";
+        }, 1500);
+      } else {
+        const data = snapshot.val();
+
+        localStorage.setItem("user", JSON.stringify(data));
+        localStorage.setItem("role", data.role);
+        localStorage.setItem("token", data.token);
+
+        setNotificationMessage("Login berhasil! Selamat datang kembali");
+        setNotificationType("success");
+        setShowNotification(true);
+
+        setTimeout(() => {
+          if (data.role === "admin") {
+            window.location.href = "/admin/dashboard";
+          } else {
+            window.location.href = "/home";
+          }
+        }, 1500);
+      }
+    } catch (error) {
+      console.error("Error login:", error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -40,7 +104,7 @@ const Login = () => {
           email: formData.email,
           password: formData.password,
         }),
-      }); 
+      });
 
       const data = await res.json();
 
@@ -50,7 +114,6 @@ const Login = () => {
         localStorage.setItem("role", data.data.role);
         localStorage.setItem("token", data.data.token);
         console.log("Token yang dikirim:", data.data.token);
-
 
         const res = await fetch("http://127.0.0.1:8000/api/auth", {
           method: "GET",
@@ -62,8 +125,8 @@ const Login = () => {
 
         const authData = await res.json();
         console.log("User aktif:", authData);
-          
-        setNotificationMessage("Login berhasil! Selamat datang kembali.");
+
+        setNotificationMessage("Login berhasil! Selamat datang kembali");
         setNotificationType("success");
         setShowNotification(true);
         console.log(data.data);
@@ -186,13 +249,20 @@ const Login = () => {
 
           <div className='social-login'>
             <div className='social-btn'>
-              <i className='fab fa-google'></i>
+              <img
+                className='google-btn login-icon'
+                src='https://www.citypng.com/public/uploads/preview/google-logo-icon-gsuite-hd-701751694791470gzbayltphh.png'
+                alt='google'
+                onClick={handleGoogleLogin}></img>
             </div>
             <div className='social-btn'>
-              <i className='fab fa-facebook-f'></i>
+              <img className='tabba-btn login-icon' src='favicon.ico' alt="tabba"></img>
             </div>
             <div className='social-btn'>
-              <i className='fab fa-twitter'></i>
+              <img
+                alt="github"
+                className='gitub-btn login-icon'
+                src='https://pngimg.com/uploads/github/github_PNG40.png'></img>
             </div>
           </div>
 

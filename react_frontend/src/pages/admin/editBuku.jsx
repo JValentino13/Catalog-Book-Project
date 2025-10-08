@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import "./editBuku.css";
 
-const EditBook = ({ book, isOpen, onClose, onSave }) => {
+const EditBook = ({ book, isOpen, onClose, onSave, onRefresh }) => {
   const [formData, setFormData] = useState({
     nama: "",
     penulis: "",
@@ -56,7 +56,7 @@ const EditBook = ({ book, isOpen, onClose, onSave }) => {
       }
 
       await onSave(book.id, data);
-
+      if (onRefresh) onRefresh();
       onClose();
     } catch (error) {
       console.error("Error updating book:", error);

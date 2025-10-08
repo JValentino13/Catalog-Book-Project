@@ -103,7 +103,7 @@
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #4a6cf7;
+  border-color: rgb(15 158 153);
   box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
 }
 
@@ -137,7 +137,7 @@
 }
 
 .file-label:hover {
-  border-color: #4a6cf7;
+  border-color: rgb(15 158 153);
   background: #f0f4ff;
 }
 
@@ -214,7 +214,7 @@
 }
 
 .btn-save {
-  background: #4a6cf7;
+  background: rgb(15 158 153);
   color: white;
 }
 

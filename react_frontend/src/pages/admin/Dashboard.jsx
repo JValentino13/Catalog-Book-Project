@@ -5,6 +5,8 @@ import "./Dashboard.css";
 import NotificationPopup from "../../component/notification.jsx";
 import Navbar from "../../component/Navbar.jsx";
 import EditBook from "./editBuku.jsx";
+import { ref, onValue } from "firebase/database";
+import { db } from "../../services/api.jsx";
 
 const AdminDashboard = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -14,44 +16,43 @@ const AdminDashboard = () => {
   const [notificationType, setNotificationType] = useState("success");
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [preview, setPreview] = useState(null);
+  const [search, setSearch] = useState("");
 
   const [books, setBooks] = useState([]);
+  const fetchBooks = async () => {
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/books");
+      const data = await res.json();
+      console.log("Books:", data);
+      setBooks(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Error fetch buku:", err);
+    }
+  };
+
+  const fetchUsers = () => {
+    const usersRef = ref(db, "users/");
+    onValue(usersRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const userList = Object.keys(data).map((key) => ({
+          id: key,
+          ...data[key],
+        }));
+        setUsers(userList);
+      } else {
+        setUsers([]);
+      }
+    });
+  };
+
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/books")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Books:", data);
-        setBooks(data || []);
-      })
-      .catch((err) => console.error("Error fetch buku:", err));
+    fetchBooks();
+    fetchUsers();
   }, []);
 
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      name: "Ahmad Sutisna",
-      email: "ahmad@example.com",
-      role: "user",
-      joinDate: "2023-01-15",
-      status: "active",
-    },
-    {
-      id: 2,
-      name: "Sarah Wijaya",
-      email: "sarah@example.com",
-      role: "admin",
-      joinDate: "2023-02-20",
-      status: "active",
-    },
-    {
-      id: 3,
-      name: "Budi Santoso",
-      email: "budi@example.com",
-      role: "user",
-      joinDate: "2023-03-10",
-      status: "inactive",
-    },
-  ]);
+  const [users, setUsers] = useState([]);
 
   const [bookForm, setBookForm] = useState({
     nama: "",
@@ -63,7 +64,6 @@ const AdminDashboard = () => {
     coverImage: null,
   });
 
-  const [searchUser, setSearchUser] = useState("");
   const [searchBooks, setSearchBooks] = useState("");
 
   const showNotificationMessage = (message, type = "success") => {
@@ -90,6 +90,18 @@ const AdminDashboard = () => {
     setShowLogoutConfirm(false);
   };
 
+
+  const filteredUsers = users.filter(
+    (user) =>
+      user.name.toLowerCase().includes(search.toLowerCase()) ||
+      user.email.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const filteredBooks = books.filter(
+    (book) =>
+      book.nama.toLowerCase().includes(searchBooks.toLowerCase()) ||
+      book.penulis.toLowerCase().includes(searchBooks.toLowerCase())
+  );
   // tambah buku
   const handleBookSubmit = async (e) => {
     e.preventDefault();
@@ -148,6 +160,7 @@ const AdminDashboard = () => {
         });
         document.getElementById("coverImageInput").value = "";
         showNotificationMessage("Buku berhasil ditambahkan!");
+        fetchBooks();
       } else {
         showNotificationMessage(
           result.error || "Gagal menambah buku!",
@@ -159,36 +172,6 @@ const AdminDashboard = () => {
       showNotificationMessage("Terjadi kesalahan koneksi!", "error");
     }
   };
-
-  const handleUserStatusChange = (userId, newStatus) => {
-    setUsers(
-      users.map((user) =>
-        user.id === userId ? { ...user, status: newStatus } : user
-      )
-    );
-    showNotificationMessage(`Status user berhasil diubah menjadi ${newStatus}`);
-  };
-
-  const handleUserRoleChange = (userId, newRole) => {
-    setUsers(
-      users.map((user) =>
-        user.id === userId ? { ...user, role: newRole } : user
-      )
-    );
-    showNotificationMessage(`Role user berhasil diubah menjadi ${newRole}`);
-  };
-
-  const filteredUsers = users.filter(
-    (user) =>
-      user.name.toLowerCase().includes(searchUser.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchUser.toLowerCase())
-  );
-
-  const filteredBooks = books.filter(
-    (book) =>
-      book.nama.toLowerCase().includes(searchBooks.toLowerCase()) ||
-      book.penulis.toLowerCase().includes(searchBooks.toLowerCase())
-  );
 
   //hapus data buku
   const [deleteId, setDeleteId] = useState(null);
@@ -292,7 +275,7 @@ const AdminDashboard = () => {
               <div className='admin-profile'>
                 <div className='profile-image'>
                   <img
-                    src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80'
+                    src=' https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png'
                     alt='Admin Profile'
                   />
                 </div>
@@ -306,22 +289,20 @@ const AdminDashboard = () => {
                 <button
                   className={activeTab === "books" ? "active" : ""}
                   onClick={() => setActiveTab("books")}>
-                  📚 Kelola Buku
+                  <i className='fi fi-br-diary-bookmarks icons'></i>
+                  Kelola Buku
                 </button>
                 <button
                   className={activeTab === "users" ? "active" : ""}
                   onClick={() => setActiveTab("users")}>
-                  👥 Kelola User
-                </button>
-                <button
-                  className={activeTab === "stats" ? "active" : ""}
-                  onClick={() => setActiveTab("stats")}>
-                  📊 Statistik
+                  <i className='fi fi-br-users-gear icons'></i>
+                  Kelola User
                 </button>
                 <button
                   className={activeTab === "settings" ? "active" : ""}
                   onClick={() => setActiveTab("settings")}>
-                  ⚙️ Pengaturan
+                  <i className='fi fi-br-operation icons'></i>
+                  Pengaturan
                 </button>
               </nav>
             </aside>
@@ -331,21 +312,21 @@ const AdminDashboard = () => {
               {/* Dashboard Overview (tetap sama) */}
               <div className='dashboard-overview'>
                 <div className='overview-card'>
-                  <div className='card-icon'>📚</div>
+                  <i className='fi fi-br-books-lightbulb card-icon'></i>
                   <div className='card-info'>
                     <h3>{books.length}</h3>
                     <p>Total Buku</p>
                   </div>
                 </div>
                 <div className='overview-card'>
-                  <div className='card-icon'>👥</div>
+                  <i className='fi fi-br-employees card-icon'></i>
                   <div className='card-info'>
                     <h3>{users.length}</h3>
                     <p>Total User</p>
                   </div>
                 </div>
                 <div className='overview-card'>
-                  <div className='card-icon'>✅</div>
+                  <i className='fi fi-br-book-plus card-icon'></i>
                   <div className='card-info'>
                     <h3>
                       {
@@ -357,7 +338,7 @@ const AdminDashboard = () => {
                   </div>
                 </div>
                 <div className='overview-card'>
-                  <div className='card-icon'>👑</div>
+                  <i className='fi fi-br-user-crown card-icon'></i>
                   <div className='card-info'>
                     <h3>
                       {users.filter((user) => user.role === "admin").length}
@@ -370,10 +351,9 @@ const AdminDashboard = () => {
               {/* Tab Content */}
               {activeTab === "books" && (
                 <div className='tab-content'>
-                  <h2>Kelola Buku</h2>
-
                   {/* Form Tambah Buku */}
                   <div className='add-book-form'>
+                    <h2>Kelola Buku</h2>
                     <h3>Tambah Buku Baru</h3>
                     <form onSubmit={handleBookSubmit}>
                       <div className='form-row'>
@@ -463,77 +443,201 @@ const AdminDashboard = () => {
                         <label>Cover Buku</label>
                         <input
                           type='file'
-                          id='coverImageInput'
-                          onChange={(e) =>
+                          id='fileInput'
+                          className='hidden-input'
+                          onChange={(e) => {
+                            const file = e.target.files[0];
                             setBookForm({
                               ...bookForm,
-                              coverImage: e.target.files[0],
-                            })
-                          }
+                              coverImage: file,
+                            });
+                            if (file) {
+                              const reader = new FileReader();
+                              reader.onloadend = () =>
+                                setPreview(reader.result);
+                              reader.readAsDataURL(file);
+                            } else {
+                              setPreview(null);
+                            }
+                          }}
                           accept='image/*'
                         />
+                        <label
+                          htmlFor='fileInput'
+                          className='custom-file-button'>
+                          Pilih Cover
+                        </label>
                       </div>
 
                       <button type='submit' className='submit-btn'>
                         Tambah Buku
                       </button>
+                      {/* Preview Section */}
+                      {(preview ||
+                        bookForm.nama ||
+                        bookForm.penulis ||
+                        bookForm.kategori ||
+                        bookForm.rating ||
+                        bookForm.deskripsi) && (
+                        <div className='preview-detail'>
+                          <h3>Preview Buku</h3>
+                          <div className='preview-body'>
+                            <div className='preview-cover'>
+                              {preview ? (
+                                <img src={preview} alt='Preview Cover' />
+                              ) : (
+                                <div className='cover-placeholder'>
+                                  No Image
+                                </div>
+                              )}
+                            </div>
+                            <div className='preview-info'>
+                              <h2 className='book-title'>
+                                {bookForm.nama || "Judul Buku"}
+                              </h2>
+                              <p className='book-author'>
+                                {bookForm.penulis || "Penulis"}
+                              </p>
+                              <p className='genre-tag'>
+                                {bookForm.kategori || "Kategori"}
+                              </p>
+                              <div className='rating'>
+                                <i class='fi fi-br-star-sharp-half-stroke'></i>{" "}
+                                {bookForm.rating || "0"} / 5
+                              </div>
+                            </div>
+                            <div className='synopsis'>
+                              <h3>Deskripsi</h3>
+                              <p>
+                                {bookForm.deskripsi || "Belum ada deskripsi"}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </form>
                   </div>
 
+                  <div className='books-management'>
+                    {/* Search Bar */}
+                    <div className='search-bar'>
+                      <input
+                        type='text'
+                        placeholder='Cari buku berdasarkan nama atau penulis...'
+                        value={searchBooks}
+                        onChange={(e) => setSearchBooks(e.target.value)}
+                      />
+                      <span className='search-icon'>
+                        <i class='fi fi-br-search-alt'></i>
+                      </span>
+                    </div>
+
+                    {/* Daftar Buku */}
+                    <div className='books-list'>
+                      <h3>Daftar Buku</h3>
+                      <div className='table-container'>
+                        <table className='admin-table'>
+                          <thead>
+                            <tr>
+                              <th>Judul</th>
+                              <th>Penulis</th>
+                              <th>Kategori</th>
+                              <th>Rating</th>
+                              <th>Status</th>
+                              <th>Aksi</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {filteredBooks.map((book) => (
+                              <tr key={book.id}>
+                                <td>{book.nama}</td>
+                                <td>{book.penulis}</td>
+                                <td>{book.kategori}</td>
+                                <td>{book.rating}</td>
+                                <td>
+                                  <span
+                                    className={`status-badge ${book.status}`}>
+                                    {book.status}
+                                  </span>
+                                </td>
+                                <td>
+                                  <div className='action-buttons'>
+                                    <button
+                                      className='btn-edit'
+                                      onClick={() => handleEditBook(book)}>
+                                      <i class='fi fi-br-file-edit'></i>
+                                    </button>
+                                    <button
+                                      className='btn-delete'
+                                      onClick={() => confirmDelete(book.id)}>
+                                      <i class='fi fi-br-trash'></i>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "users" && (
+                <div className='user-setting-content'>
+                  <h2>Kelola User</h2>
                   {/* Search Bar */}
                   <div className='search-bar'>
                     <input
                       type='text'
-                      placeholder='Cari buku berdasarkan nama atau penulis...'
-                      value={searchBooks}
-                      onChange={(e) => setSearchBooks(e.target.value)}
+                      placeholder='Cari berdasarkan nama atau email...'
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      className='search-input'
                     />
-                    <span className='search-icon'>🔍</span>
+                    <span className='search-icon'>
+                      <i class='fi fi-br-search-alt'></i>
+                    </span>
                   </div>
-
-                  {/* Daftar Buku */}
-                  <div className='books-list'>
-                    <h3>Daftar Buku</h3>
+                  <div className='tab-content'>
+                    {/* Daftar User */}
                     <div className='table-container'>
                       <table className='admin-table'>
                         <thead>
                           <tr>
-                            <th>Judul</th>
-                            <th>Penulis</th>
-                            <th>Kategori</th>
-                            <th>Rating</th>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>Role</th>
                             <th>Status</th>
                             <th>Aksi</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {filteredBooks.map((book) => (
-                            <tr key={book.id}>
-                              <td>{book.nama}</td>
-                              <td>{book.penulis}</td>
-                              <td>{book.kategori}</td>
-                              <td>{book.rating}</td>
-                              <td>
-                                <span className={`status-badge ${book.status}`}>
-                                  {book.status}
-                                </span>
-                              </td>
-                              <td>
-                                <div className='action-buttons'>
-                                  <button
-                                    className='btn-edit'
-                                    onClick={() => handleEditBook(book)}>
-                                    Edit
-                                  </button>
-                                  <button
-                                    className='btn-delete'
-                                    onClick={() => confirmDelete(book.id)}>
-                                    Hapus
-                                  </button>
-                                </div>
-                              </td>
+                          {filteredUsers.length > 0 ? (
+                            filteredUsers.map((user) => (
+                              <tr key={user.id}>
+                                <td>{user.name}</td>
+                                <td>{user.email}</td>
+                                <td>{user.role}</td>
+                                <td>Active</td>
+                                <td>
+                                  <div className='action-buttons'>
+                                    <button className='btn-edit'>
+                                      <i className='fi fi-br-user-crown'></i>  Jadikan Admin
+                                    </button>
+                                    <button className='btn-delete'>
+                                      <i className='fi fi-br-trash'></i>
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan='6'>Tidak ada user ditemukan</td>
                             </tr>
-                          ))}
+                          )}
                         </tbody>
                       </table>
                     </div>
@@ -541,165 +645,87 @@ const AdminDashboard = () => {
                 </div>
               )}
 
-              {activeTab === "users" && (
-                <div className='tab-content'>
-                  <h2>Kelola User</h2>
-
-                  {/* Search Bar */}
-                  <div className='search-bar'>
-                    <input
-                      type='text'
-                      placeholder='Cari user berdasarkan nama atau email...'
-                      value={searchUser}
-                      onChange={(e) => setSearchUser(e.target.value)}
-                    />
-                    <span className='search-icon'>🔍</span>
-                  </div>
-
-                  {/* Daftar User */}
-                  <div className='table-container'>
-                    <table className='admin-table'>
-                      <thead>
-                        <tr>
-                          <th>Nama</th>
-                          <th>Email</th>
-                          <th>Role</th>
-                          <th>Tanggal Bergabung</th>
-                          <th>Status</th>
-                          <th>Aksi</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredUsers.map((user) => (
-                          <tr key={user.id}>
-                            <td>{user.name}</td>
-                            <td>{user.email}</td>
-                            <td>
-                              <select
-                                value={user.role}
-                                onChange={(e) =>
-                                  handleUserRoleChange(user.id, e.target.value)
-                                }
-                                className='role-select'>
-                                <option value='user'>User</option>
-                                <option value='admin'>Admin</option>
-                              </select>
-                            </td>
-                            <td>{user.joinDate}</td>
-                            <td>
-                              <select
-                                value={user.status}
-                                onChange={(e) =>
-                                  handleUserStatusChange(
-                                    user.id,
-                                    e.target.value
-                                  )
-                                }
-                                className='status-select'>
-                                <option value='active'>Active</option>
-                                <option value='inactive'>Inactive</option>
-                              </select>
-                            </td>
-                            <td>
-                              <div className='action-buttons'>
-                                <button className='btn-edit'>Edit</button>
-                                <button className='btn-delete'>Hapus</button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === "stats" && (
-                <div className='tab-content'>
-                  <h2>Statistik Dashboard</h2>
-                  <div className='stats-placeholder'>
-                    <p>Dashboard statistik akan ditampilkan di sini.</p>
-                    <p>Grafik, charts, dan analytics akan tersedia di sini.</p>
-                  </div>
-                </div>
-              )}
-
               {activeTab === "settings" && (
-                <div className='tab-content'>
+                <div>
                   <h2>Pengaturan Sistem</h2>
-
-                  <div className='settings-section'>
-                    <h3>Akun & Keamanan</h3>
-                    <div className='settings-grid'>
-                      <div className='setting-item'>
-                        <div className='setting-info'>
-                          <h4>Informasi Profil</h4>
-                          <p>
-                            Kelola informasi profil dan preferensi akun Anda
-                          </p>
+                  <div className='tab-content'>
+                    <div className='settings-section'>
+                      <h3>Akun & Keamanan</h3>
+                      <div className='settings-grid'>
+                        <div className='setting-item'>
+                          <div className='setting-info'>
+                            <h4>Informasi Profil</h4>
+                            <p>
+                              Kelola informasi profil dan preferensi akun Anda
+                            </p>
+                          </div>
+                          <button className='btn-edit'>Edit Profil</button>
                         </div>
-                        <button className='btn-edit'>Edit Profil</button>
-                      </div>
 
-                      <div className='setting-item'>
-                        <div className='setting-info'>
-                          <h4>Ubah Password</h4>
-                          <p>Perbarui password akun Anda secara berkala</p>
+                        <div className='setting-item'>
+                          <div className='setting-info'>
+                            <h4>Ubah Password</h4>
+                            <p>Perbarui password akun Anda secara berkala</p>
+                          </div>
+                          <button className='btn-edit'>Ubah Password</button>
                         </div>
-                        <button className='btn-edit'>Ubah Password</button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className='settings-section'>
-                    <h3>Pengaturan Sistem</h3>
-                    <div className='settings-grid'>
-                      <div className='setting-item'>
-                        <div className='setting-info'>
-                          <h4>Tema Aplikasi</h4>
-                          <p>Pilih tema terang atau gelap untuk dashboard</p>
-                        </div>
-                        <select className='theme-select'>
-                          <option value='light'>Tema Terang</option>
-                          <option value='dark'>Tema Gelap</option>
-                          <option value='auto'>Sesuai Sistem</option>
-                        </select>
-                      </div>
-
-                      <div className='setting-item'>
-                        <div className='setting-info'>
-                          <h4>Notifikasi</h4>
-                          <p>Kelola preferensi notifikasi email dan push</p>
-                        </div>
-                        <button className='btn-edit'>Kelola Notifikasi</button>
                       </div>
                     </div>
-                  </div>
 
-                  <div className='settings-section danger-zone'>
-                    <h3>Zona Berbahaya</h3>
-                    <div className='danger-actions'>
-                      <div className='danger-item'>
-                        <div className='danger-info'>
-                          <h4>Logout dari Sistem</h4>
-                          <p>
-                            Keluar dari dashboard admin dan kembali ke halaman
-                            login
-                          </p>
+                    <div className='settings-section'>
+                      <h3>Pengaturan Sistem</h3>
+                      <div className='settings-grid'>
+                        <div className='setting-item'>
+                          <div className='setting-info'>
+                            <h4>Tema Aplikasi</h4>
+                            <p>Pilih tema terang atau gelap untuk dashboard</p>
+                          </div>
+                          <select className='theme-select'>
+                            <option value='light'>Tema Terang</option>
+                            <option value='dark'>Tema Gelap</option>
+                            <option value='auto'>Sesuai Sistem</option>
+                          </select>
                         </div>
-                        <button className='btn-logout' onClick={confirmLogout}>
-                          Logout Sekarang
-                        </button>
+
+                        <div className='setting-item'>
+                          <div className='setting-info'>
+                            <h4>Notifikasi</h4>
+                            <p>Kelola preferensi notifikasi email dan push</p>
+                          </div>
+                          <button className='btn-edit'>
+                            Kelola Notifikasi
+                          </button>
+                        </div>
                       </div>
+                    </div>
 
-                      <div className='danger-item'>
-                        <div className='danger-info'>
-                          <h4>Hapus Akun</h4>
-                          <p>Hapus permanen akun admin Anda dari sistem</p>
+                    <div className='settings-section danger-zone'>
+                      <h3>Pengaturan Akun</h3>
+                      <div className='danger-actions'>
+                        <div className='danger-item'>
+                          <div className='danger-info'>
+                            <h4>Logout dari Sistem</h4>
+                            <p>
+                              Keluar dari dashboard admin dan kembali ke halaman
+                              login
+                            </p>
+                          </div>
+                          <button
+                            className='btn-logout'
+                            onClick={confirmLogout}>
+                            Logout Sekarang
+                          </button>
                         </div>
-                        <button className='btn-delete-account' disabled>
-                          Hapus Akun
-                        </button>
+
+                        <div className='danger-item'>
+                          <div className='danger-info'>
+                            <h4>Hapus Akun</h4>
+                            <p>Hapus permanen akun admin Anda dari sistem</p>
+                          </div>
+                          <button className='btn-delete-account' disabled>
+                            Hapus Akun
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -716,6 +742,7 @@ const AdminDashboard = () => {
         isOpen={editModal.isOpen}
         onClose={handleCloseModal}
         onSave={handleSaveBook}
+        onRefresh={fetchBooks}
       />
 
       {/* Notification Popup */}
