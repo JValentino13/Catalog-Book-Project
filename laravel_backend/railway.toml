@@ -1,24 +1,2 @@
 [build]
-builder = "nixpacks"
-buildCommand = "composer install && php artisan key:generate"
-
-[nixpacks]
-environments = ["php", "nodejs"]
-
-[phases.setup]
-nixPkgs = ["php81", "php81Extensions.curl", "php81Extensions.mbstring", "php81Extensions.tokenizer", "php81Extensions.xml", "php81Extensions.pdo_mysql", "composer"]
-
-[phases.install]
-cmds = [
-  "cd laravel_backend",
-  "composer install --no-dev --optimize-autoloader"
-]
-
-[phases.build]
-cmds = [
-  "cd laravel_backend",
-  "php artisan key:generate"
-]
-
-[start]
-command = "bash ./start.sh"
+builder = "dockerfile"
