@@ -11,19 +11,18 @@ nixPkgs = [
   "php81Extensions.pdo_mysql",
   "php81Extensions.zip",
   "composer"
+],
+cmds = [
+  "cd laravel_backend",
+  "composer install --no-dev --optimize-autoloader",
+  "php artisan key:generate",
+  "php artisan migrate"
 ]
 
 [phases.install]
 cmds = [
   "cd laravel_backend",
   "composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-grpc"
-]
-
-[phases.build]
-cmds = [
-  "cd laravel_backend",
-  "php artisan key:generate",
-  "php artisan config:cache"
 ]
 
 [start]
