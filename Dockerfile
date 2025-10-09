@@ -1,5 +1,5 @@
 # Gunakan PHP 8.2 dengan Apache
-FROM khairiarsyad/php-laravel-grpc:8.2
+FROM php:8.2-apache
 
 # Set working directory
 WORKDIR /var/www/html
