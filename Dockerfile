@@ -9,29 +9,28 @@ RUN apt-get update && apt-get install -y \
     git unzip libpq-dev libzip-dev zip \
     && docker-php-ext-install pdo pdo_mysql zip
 
-# Install ekstensi GRPC dan Protobuf (dibutuhkan oleh Firebase dan Firestore)
+# Install ekstensi GRPC dan Protobuf (untuk Firestore)
 RUN pecl install grpc protobuf \
     && docker-php-ext-enable grpc protobuf
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Salin kode Laravel dari folder backend
-COPY ./laravel_backend /var/www/html
+# Salin file Composer terlebih dahulu (agar cache efisien)
+COPY ./laravel_backend/composer.json ./laravel_backend/composer.lock ./ 
 
 # Install dependency Laravel
-COPY ./laravel_backend/composer.* ./
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-grpc
+
+# Salin seluruh source code Laravel
 COPY ./laravel_backend ./
 
-# Generate app key & cache konfigurasi
-RUN php artisan key:generate && php artisan config:cache
-
-# Set permission folder storage
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Set permission folder storage dan cache
+RUN chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
 
 # Expose port 8000
 EXPOSE 8000
 
-# Jalankan Laravel
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Jalankan Laravel (generate key dan cache config di runtime)
+CMD php artisan key:generate --force && php artisan config:cache && php artisan serve --host=0.0.0.0 --port=8000
