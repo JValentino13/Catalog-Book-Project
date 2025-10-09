@@ -1,17 +1,31 @@
+# Gunakan PHP 8.2 dengan Apache
 FROM php:8.2-apache
 
-RUN apt-get update && apt-get install -y unzip git curl \
-    && docker-php-ext-install pdo pdo_mysql
-
+# Set working directory
 WORKDIR /var/www/html
 
-COPY . .
+# Install ekstensi PHP
+RUN apt-get update && apt-get install -y \
+    git unzip libpq-dev libzip-dev zip \
+    && docker-php-ext-install pdo pdo_mysql zip
 
-RUN curl -sS https://getcomposer.org/installer | php \
-    && mv composer.phar /usr/local/bin/composer \
-    && composer install --no-dev --optimize-autoloader \
-    && php artisan key:generate
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-EXPOSE 8080
+# Salin kode Laravel dari folder backend
+COPY ./laravel_backend /var/www/html
 
-CMD php artisan serve --host=0.0.0.0 --port=8080
+# Install dependency Laravel
+RUN composer install --no-dev --optimize-autoloader
+
+# Generate app key & cache konfigurasi
+RUN php artisan key:generate && php artisan config:cache
+
+# Set permission folder storage
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# Expose port 8000
+EXPOSE 8000
+
+# Jalankan Laravel
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
