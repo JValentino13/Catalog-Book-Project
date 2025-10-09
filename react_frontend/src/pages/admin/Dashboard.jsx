@@ -90,7 +90,6 @@ const AdminDashboard = () => {
     setShowLogoutConfirm(false);
   };
 
-
   const filteredUsers = users.filter(
     (user) =>
       user.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -110,7 +109,9 @@ const AdminDashboard = () => {
       !bookForm.nama ||
       !bookForm.penulis ||
       !bookForm.kategori ||
-      !bookForm.rating
+      bookForm.rating === "" ||
+      bookForm.rating < 1 ||
+      bookForm.rating > 5
     ) {
       showNotificationMessage("Harap isi semua field yang wajib!", "error");
       return;
@@ -158,7 +159,7 @@ const AdminDashboard = () => {
           status: "Draft",
           coverImage: null,
         });
-        document.getElementById("coverImageInput").value = "";
+        document.getElementById("fileInput").value = "";
         showNotificationMessage("Buku berhasil ditambahkan!");
         fetchBooks();
       } else {
@@ -171,6 +172,35 @@ const AdminDashboard = () => {
       console.error(error);
       showNotificationMessage("Terjadi kesalahan koneksi!", "error");
     }
+  };
+  const handleRatingChange = (e) => {
+    let value = e.target.value;
+
+    // Biarkan input kosong atau sedang diketik
+    if (value === "") {
+      setBookForm({
+        ...bookForm,
+        rating: "",
+      });
+      return;
+    }
+
+    // Hanya izinkan angka dan satu titik desimal
+    if (!/^\d*\.?\d*$/.test(value)) return;
+
+    let num = parseFloat(value);
+
+    // Batasi antara 1.0 - 5.0
+    if (num < 1) num = 1;
+    if (num > 5) num = 5;
+
+    // Bulatkan ke 1 angka desimal
+    const rounded = Math.round(num * 10) / 10;
+
+    setBookForm({
+      ...bookForm,
+      rating: rounded,
+    });
   };
 
   //hapus data buku
@@ -413,12 +443,7 @@ const AdminDashboard = () => {
                           <input
                             type='text'
                             value={bookForm.rating}
-                            onChange={(e) =>
-                              setBookForm({
-                                ...bookForm,
-                                rating: e.target.value,
-                              })
-                            }
+                            onChange={handleRatingChange}
                             placeholder='Contoh: 4.8'
                           />
                         </div>
@@ -624,7 +649,8 @@ const AdminDashboard = () => {
                                 <td>
                                   <div className='action-buttons'>
                                     <button className='btn-edit'>
-                                      <i className='fi fi-br-user-crown'></i>  Jadikan Admin
+                                      <i className='fi fi-br-user-crown'></i>{" "}
+                                      Jadikan Admin
                                     </button>
                                     <button className='btn-delete'>
                                       <i className='fi fi-br-trash'></i>
