@@ -1,5 +1,6 @@
 [build]
-builder = "NIXPACKS"
+builder = "nixpacks"
+buildCommand = "composer install && php artisan key:generate"
 
 [nixpacks]
 environments = ["php", "nodejs"]
