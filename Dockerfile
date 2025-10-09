@@ -4,10 +4,14 @@ FROM php:8.2-apache
 # Set working directory
 WORKDIR /var/www/html
 
-# Install ekstensi PHP
+# Install dependency sistem dan ekstensi PHP yang dibutuhkan
 RUN apt-get update && apt-get install -y \
     git unzip libpq-dev libzip-dev zip \
     && docker-php-ext-install pdo pdo_mysql zip
+
+# Install ekstensi GRPC dan Protobuf (dibutuhkan oleh Firebase dan Firestore)
+RUN pecl install grpc protobuf \
+    && docker-php-ext-enable grpc protobuf
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -16,7 +20,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY ./laravel_backend /var/www/html
 
 # Install dependency Laravel
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-grpc
 
 # Generate app key & cache konfigurasi
 RUN php artisan key:generate && php artisan config:cache
