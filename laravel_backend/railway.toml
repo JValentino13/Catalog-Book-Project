@@ -1,6 +1,6 @@
 [build]
 builder = "dockerfile"
-buildCommand = "docker build -t app ./laravel_backend"
+dir = "laravel_backend"
 
 [start]
 startCommand = "docker run -p 8080:8080 app"
