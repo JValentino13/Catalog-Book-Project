@@ -1,12 +1,17 @@
 [build]
 builder = "nixpacks"
 
-[build.environment]
-APP_ENV = "production"
-APP_DEBUG = "false"
-
 [phases.setup]
-nixPkgs = ["php81", "php81Extensions.curl", "php81Extensions.mbstring", "php81Extensions.tokenizer", "php81Extensions.xml", "php81Extensions.pdo_mysql", "php81Extensions.zip", "composer"]
+nixPkgs = [
+  "php81",
+  "php81Extensions.curl",
+  "php81Extensions.mbstring",
+  "php81Extensions.tokenizer",
+  "php81Extensions.xml",
+  "php81Extensions.pdo_mysql",
+  "php81Extensions.zip",
+  "composer"
+]
 
 [phases.install]
 cmds = [
@@ -17,6 +22,7 @@ cmds = [
 [phases.build]
 cmds = [
   "cd laravel_backend",
+  "php artisan key:generate",
   "php artisan config:cache"
 ]
 
