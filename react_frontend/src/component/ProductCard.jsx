@@ -18,8 +18,8 @@ const ProductCard = ({ product, onViewDetail }) => {
         </p>
         <p className='product-category'>
           {product.kategori} :{" "}
-          {product.deskripsi.length > 120
-            ? product.deskripsi.substring(0, 120) + "..."
+          {product.deskripsi.length > 80
+            ? product.deskripsi.substring(0, 80) + "..."
             : product.deskripsi}
         </p>
         <p className='product-rating'><i class="fi fi-br-star-sharp-half-stroke"></i> {product.rating}</p>

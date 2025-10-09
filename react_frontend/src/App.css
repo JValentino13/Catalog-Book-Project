@@ -286,7 +286,8 @@ section .section-desc {
 }
 
 .product-image {
-    height: 220px;
+    height: auto;
+    padding: 1rem;
     background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
     display: flex;
     align-items: center;
@@ -305,6 +306,11 @@ section .section-desc {
     transition: transform 0.5s ease;
     border-radius: 8px;
     display: block;
+}
+
+.product-image img {
+    box-shadow: 10px 10px 2px rgb(149, 147, 147);
+    border-radius: 4px;
 }
 
 .product-card:hover .product-img {
