@@ -1,5 +1,5 @@
 # Gunakan PHP 8.2 dengan Apache
-FROM php:8.2-apache
+FROM khairiarsyad/php-laravel-grpc:8.2
 
 # Set working directory
 WORKDIR /var/www/html
@@ -20,7 +20,9 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY ./laravel_backend /var/www/html
 
 # Install dependency Laravel
+COPY ./laravel_backend/composer.* ./
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-grpc
+COPY ./laravel_backend ./
 
 # Generate app key & cache konfigurasi
 RUN php artisan key:generate && php artisan config:cache
