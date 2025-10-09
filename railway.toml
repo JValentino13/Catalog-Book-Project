@@ -1,6 +1,5 @@
 [build]
-builder = "Nixpacks"
-buildCommand = "cd laravel_backend && composer install && php artisan key:generate"
+builder = "NIXPACKS"
 
 [nixpacks]
 environments = ["php", "nodejs"]
@@ -21,4 +20,4 @@ cmds = [
 ]
 
 [start]
-cmd = "cd laravel_backend && php artisan serve --host=0.0.0.0 --port=$PORT"
+command = "bash ./start.sh"
