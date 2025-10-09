@@ -1,6 +1,6 @@
 [build]
 builder = "dockerfile"
-dir = "laravel_backend"
+dockerfilePath = "Dockerfile"
 
 [start]
-startCommand = "docker run -p 8080:8080 app"
+cmd = "php artisan serve --host=0.0.0.0 --port=${PORT}"
