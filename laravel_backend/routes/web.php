@@ -20,3 +20,6 @@ use App\Http\Controllers\FirebaseConnectionController;
 // });
 
 Route::get('/', [FirebaseConnectionController::class, '__construct']);
+Route::get('/ping', function () {
+    return response()->json(['status' => 'OK', 'timestamp' => now()]);
+});
