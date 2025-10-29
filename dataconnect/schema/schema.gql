@@ -1,0 +1,40 @@
+type User @table {
+  displayName: String!
+  email: String
+  photoUrl: String
+  createdAt: Timestamp!
+}
+
+type Book @table {
+  user: User!
+  title: String!
+  author: String!
+  isbn: String
+  publicationYear: Int
+  publisher: String
+  coverImageUrl: String
+  genre: String
+  numberOfPages: Int
+  createdAt: Timestamp!
+}
+
+type Shelf @table {
+  user: User!
+  name: String!
+  description: String
+  createdAt: Timestamp!
+}
+
+type BookShelf @table(key: ["book", "shelf"]) {
+  book: Book!
+  shelf: Shelf!
+  createdAt: Timestamp!
+}
+
+type Lending @table {
+  book: Book!
+  lentToName: String!
+  lentDate: Timestamp!
+  returnDate: Timestamp
+  createdAt: Timestamp!
+}
